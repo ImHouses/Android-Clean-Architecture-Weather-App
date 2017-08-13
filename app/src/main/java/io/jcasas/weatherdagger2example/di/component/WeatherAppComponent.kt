@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.di
+package io.jcasas.weatherdagger2example.di.component
 
 import dagger.Component
-import javax.inject.Singleton
+import io.jcasas.weatherdagger2example.data.source.AppDataManager
+import io.jcasas.weatherdagger2example.di.module.ApiModule
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/11/17.
  */
-@Singleton
-@Component(modules = arrayOf(AppModule::class))
-interface AppComponent {
+@Component(modules = arrayOf(ApiModule::class))
+interface WeatherAppComponent {
 
+    fun inject(appDataManager: AppDataManager)
 }

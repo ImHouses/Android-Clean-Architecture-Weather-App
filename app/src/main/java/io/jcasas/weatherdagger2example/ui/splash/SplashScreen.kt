@@ -18,20 +18,29 @@ package io.jcasas.weatherdagger2example.ui.splash
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import io.jcasas.weatherdagger2example.R
+import io.jcasas.weatherdagger2example.WeatherApp
+import io.jcasas.weatherdagger2example.data.source.model.Weather
+import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
+import javax.inject.Inject
 
 class SplashScreen : AppCompatActivity(), SplashScreenContract.View {
+
+    lateinit var mPresenter:SplashScreenContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
     }
 
-    override fun setPresenter(presenter: SplashScreenContract.Presenter) {
-
+    override fun setPresenter(p:SplashScreenContract.Presenter) {
+        mPresenter = p
     }
 
     override fun toMain() {
 
     }
+
 }

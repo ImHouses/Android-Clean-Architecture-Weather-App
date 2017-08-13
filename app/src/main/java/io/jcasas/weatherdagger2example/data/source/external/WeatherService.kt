@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.ui.splash
+package io.jcasas.weatherdagger2example.data.source.external
 
+import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.Call
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/10/17.
  */
-class SplashScreenPresenter : SplashScreenContract.Presenter {
+interface WeatherService {
 
-    var view : SplashScreenContract.View
-
-    constructor(view:SplashScreenContract.View) {
-        this.view = view
-    }
-
-    override fun start() {
-
-    }
-
-    override fun isUserLogged(): Boolean {
-        return true
-    }
+    /* For current forecast. */
+    @GET("weather/")
+    fun getCurrentWeather(@Query("lat") latitude:Double,
+                          @Query("lon") longitude:Double,
+                          @Query("appid") apiKey:String):Call<WeatherResponse>
 
 }

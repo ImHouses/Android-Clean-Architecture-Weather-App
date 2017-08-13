@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.di
+package io.jcasas.weatherdagger2example.data.source.model
 
-import dagger.Module
-import dagger.Provides
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
+import java.util.*
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/10/17.
  */
-@Module
-class NetworkModule {
-
-    @Singleton
-    @Provides
-    fun provideRetrofit():Retrofit {
-        return Retrofit.Builder()
-                .baseUrl("http://samples.openweathermap.org/data/2.5/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-    }
-}
+class WeatherResponse(val weather:LinkedList<Weather>,
+                      val coord:Coord,
+                      val id:Integer,
+                      val name:String,
+                      val cod:Integer,
+                      val main:Conditions)

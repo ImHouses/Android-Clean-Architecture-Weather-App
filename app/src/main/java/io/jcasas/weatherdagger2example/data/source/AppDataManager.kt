@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example
+package io.jcasas.weatherdagger2example.data.source
 
-import android.app.Application
+import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
-import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
 import io.jcasas.weatherdagger2example.di.module.ApiModule
 import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
 import io.jcasas.weatherdagger2example.util.Constants
-
+import javax.inject.Inject
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/11/17.
  */
+class AppDataManager private constructor() {
 
-class WeatherApp : Application() {
+    @Inject
+    lateinit var weatherApi: WeatherApi
 
-    private lateinit var mWeatherAppComponent: WeatherAppComponent
-
-    override fun onCreate() {
-        super.onCreate()
-        mWeatherAppComponent = DaggerWeatherAppComponent.builder()
+    init {
+        DaggerWeatherAppComponent.builder()
                 .apiModule(ApiModule())
                 .weatherServiceModule(WeatherServiceModule(Constants.BASE_URL))
                 .build()
+                .inject(this)
     }
 
-    fun getAppComponent(): WeatherAppComponent {
-        return mWeatherAppComponent
+    private object Holder {
+        val INSTANCE = AppDataManager()
+    }
+
+    companion object {
+        val instance: AppDataManager by lazy { Holder.INSTANCE }
     }
 }

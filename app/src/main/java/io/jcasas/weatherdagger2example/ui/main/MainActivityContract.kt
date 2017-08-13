@@ -14,27 +14,39 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.ui.splash
+package io.jcasas.weatherdagger2example.ui.main
 
-import io.jcasas.weatherdagger2example.data.source.model.Weather
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.ui.BasePresenter
 import io.jcasas.weatherdagger2example.ui.BaseView
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/12/17.
  */
-interface SplashScreenContract {
+interface MainActivityContract {
 
     interface View : BaseView<Presenter> {
 
-        fun toMain()
+        fun askLocationPermission()
+
+        fun showWeather(weatherResponse: WeatherResponse?)
+
+        fun showErrorAlert(message:String)
+
+        fun showProgressBar()
+
+        fun hideProgressBar()
+
+        fun hideRefreshing()
 
     }
+
 
     interface Presenter : BasePresenter {
 
-        fun isUserLogged():Boolean
+        fun loadWeather(lat:Double?, lon:Double?)
 
     }
+
+
 }

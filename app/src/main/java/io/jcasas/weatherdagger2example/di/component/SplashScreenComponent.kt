@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.ui.splash
+package io.jcasas.weatherdagger2example.di.component
 
+import dagger.Component
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/9/17.
  */
-class SplashScreenPresenter : SplashScreenContract.Presenter {
+@Component(dependencies = arrayOf()) interface SplashScreenComponent {
 
-    var view : SplashScreenContract.View
-
-    constructor(view:SplashScreenContract.View) {
-        this.view = view
-    }
-
-    override fun start() {
-
-    }
-
-    override fun isUserLogged(): Boolean {
-        return true
-    }
 
 }

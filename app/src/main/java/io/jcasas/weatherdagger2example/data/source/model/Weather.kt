@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.ui.splash
-
+package io.jcasas.weatherdagger2example.data.source.model
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/10/17.
  */
-class SplashScreenPresenter : SplashScreenContract.Presenter {
-
-    var view : SplashScreenContract.View
-
-    constructor(view:SplashScreenContract.View) {
-        this.view = view
-    }
-
-    override fun start() {
-
-    }
-
-    override fun isUserLogged(): Boolean {
-        return true
-    }
-
-}
+class Weather(val id:Integer, val main:String, val description:String)

@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.di
+package io.jcasas.weatherdagger2example.data.source.external
 
-import android.app.Application
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import io.jcasas.weatherdagger2example.util.Constants
+import retrofit2.Call
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/10/17.
  */
-@Module(includes = arrayOf(NetworkModule::class)) class AppModule(val app: Application) {
-    @Provides @Singleton fun provideApp():Application = app
+class WeatherApi(private val weatherService: WeatherService) {
+
+    fun getCurrentWeather(lat:Double, lon:Double): Call<WeatherResponse> {
+        return weatherService.getCurrentWeather(lat, lon, Constants.API_KEY)
+    }
 }

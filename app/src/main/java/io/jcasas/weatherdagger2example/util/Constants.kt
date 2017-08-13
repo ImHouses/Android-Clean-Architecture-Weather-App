@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.ui.splash
-
+package io.jcasas.weatherdagger2example.util
 
 /**
- * Created by jcasas on 8/6/17.
+ * Created by jcasas on 8/10/17.
  */
-class SplashScreenPresenter : SplashScreenContract.Presenter {
+object Constants {
 
-    var view : SplashScreenContract.View
+    val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 
-    constructor(view:SplashScreenContract.View) {
-        this.view = view
-    }
+    val API_KEY = "02b846e2b73d1c9bdbe10ae62b60de3c"
 
-    override fun start() {
-
-    }
-
-    override fun isUserLogged(): Boolean {
-        return true
-    }
-
+    val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
 }
