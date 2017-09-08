@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Weather Dagger 2 Example</string>
+    <string name="app_name">Simple Weather</string>
+
+    <!-- Error strings -->
+    <string name="location_permission_error">We need your location in order to provide your weather</string>
+
+    <!-- MainActivity strings -->
+    <string name="main_toolbar_title">Weather at</string>
 </resources>

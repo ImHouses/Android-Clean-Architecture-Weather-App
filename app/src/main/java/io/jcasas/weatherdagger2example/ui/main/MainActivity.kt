@@ -107,7 +107,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
                         && grantResults.get(0) == PackageManager.PERMISSION_GRANTED) {
                     setLocationListener()
                 }  else {
-                    Toast.makeText(this, "We need your location in order to provide your weather", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this,
+                            resources.getText(R.string.location_permission_error),
+                            Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -124,11 +126,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         }
         val temperature:String = (TempConverter.convert(weatherResponse.main.temp,
                 Temp.KELVIN,
-                Temp.CELSIUS)).toString() + " °C"
+                Temp.CELSIUS).toInt()).toString() + " °C"
         val cityName:String = weatherResponse.name
         val weatherDescription = weatherResponse.weather.get(0).description
         mTextTemperature.setText(temperature.toString())
         mTextCityName.setText(cityName)
+        val title:String = String.format("%s %s",
+                resources.getText(R.string.main_toolbar_title),
+                cityName)
+        supportActionBar!!.setTitle(title)
         mTextWeatherDesc.setText(weatherDescription)
     }
 
