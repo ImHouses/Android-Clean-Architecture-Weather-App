@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
 
     fun setLocationListener() {
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100F, this)
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100F, this)
     }
 
     override fun showWeather(weatherResponse: WeatherResponse?) {
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         }
         val temperature:String = (TempConverter.convert(weatherResponse.main.temp,
                 Temp.KELVIN,
-                Temp.CELSIUS).toInt()).toString() + " °C"
+                Temp.CELSIUS)).toString() + " °C"
         val cityName:String = weatherResponse.name
         val weatherDescription = weatherResponse.weather.get(0).description
         mTextTemperature.setText(temperature.toString())
