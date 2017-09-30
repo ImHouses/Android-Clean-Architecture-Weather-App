@@ -22,19 +22,13 @@ import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.util.Constants
 import io.jcasas.weatherdagger2example.util.WeatherCallback
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-/**
- * Created by jcasas on 8/12/17.
- */
 class MainActivityPresenter : MainActivityContract.Presenter{
 
     val view:MainActivityContract.View
 
-    val weatherApi:WeatherApi
-    val mDataManager:DataManager
+    private val weatherApi:WeatherApi
+    private val mDataManager:DataManager
 
 
     constructor(view:MainActivityContract.View) {

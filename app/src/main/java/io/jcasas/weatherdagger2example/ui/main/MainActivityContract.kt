@@ -41,12 +41,9 @@ interface MainActivityContract {
 
     }
 
-
     interface Presenter : BasePresenter {
 
         fun loadWeather(lat:Double?, lon:Double?)
-
     }
-
 
 }
