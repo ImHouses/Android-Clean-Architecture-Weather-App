@@ -34,6 +34,7 @@ import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.di.component.DaggerMainActivityComponent
 import io.jcasas.weatherdagger2example.di.module.MainActivityModule
+import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Constants
 import io.jcasas.weatherdagger2example.util.Temp
 import io.jcasas.weatherdagger2example.util.TempConverter
@@ -128,17 +129,22 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
                 Temp.KELVIN,
                 Temp.CELSIUS).toInt()).toString() + " °C"
         val cityName:String = weatherResponse.name
-        val weatherDescription = weatherResponse.weather.get(0).description
-        mTextTemperature.setText(temperature.toString())
-        mTextCityName.setText(cityName)
+        val weatherDescription = weatherResponse.weather[0].main
         val title:String = String.format("%s %s",
                 resources.getText(R.string.main_toolbar_title),
                 cityName)
-        supportActionBar!!.setTitle(title)
-        mTextWeatherDesc.setText(weatherDescription)
+        mTextTemperature.text = temperature
+        mTextCityName.text = cityName
+        supportActionBar!!.title = title
+        mTextWeatherDesc.text = weatherDescription
     }
 
-    override fun showErrorAlert(message: String) {
+    override fun showErrorAlert(errorCode: Int) {
+        if (errorCode == Constants.Errors.WEATHER_RETRIEVE_ERROR) {
+            ActivityUtils.createStandardAlert(R.string.error_title_string,
+                    R.string.main_weather_error,
+                    this).show()
+        }
     }
 
     override fun setPresenter(presenter: MainActivityContract.Presenter) {
@@ -150,19 +156,17 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         mLocationManager.removeUpdates(this)
     }
 
-    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
-
-    }
+    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) { }
 
     override fun onProviderEnabled(p0: String?) { }
 
     override fun onProviderDisabled(p0: String?) { }
 
-    fun refresh() {
-        setLocationListener()
+    override fun hideRefreshing() {
+        mSwipeRefresh.isRefreshing = false
     }
 
-    override fun hideRefreshing() {
-        mSwipeRefresh.setRefreshing(false)
+    private fun refresh() {
+        setLocationListener()
     }
 }

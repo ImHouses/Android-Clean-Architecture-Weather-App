@@ -31,7 +31,7 @@ interface MainActivityContract {
 
         fun showWeather(weatherResponse: WeatherResponse?)
 
-        fun showErrorAlert(message:String)
+        fun showErrorAlert(errorCode:Int)
 
         fun showProgressBar()
 
