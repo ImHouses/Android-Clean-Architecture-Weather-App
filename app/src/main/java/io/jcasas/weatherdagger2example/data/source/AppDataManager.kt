@@ -17,16 +17,21 @@
 package io.jcasas.weatherdagger2example.data.source
 
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
+import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
 import io.jcasas.weatherdagger2example.di.module.ApiModule
 import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
 import io.jcasas.weatherdagger2example.util.Constants
+import io.jcasas.weatherdagger2example.util.WeatherCallback
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 /**
  * Created by jcasas on 8/11/17.
  */
-class AppDataManager private constructor() {
+class AppDataManager private constructor() : DataManager {
 
     @Inject
     lateinit var weatherApi: WeatherApi
@@ -45,5 +50,17 @@ class AppDataManager private constructor() {
 
     companion object {
         val instance: AppDataManager by lazy { Holder.INSTANCE }
+    }
+
+    override fun getWeather(lat: Double, lon: Double, callback: WeatherCallback) {
+        weatherApi.getCurrentWeather(lat, lon).enqueue(object : Callback<WeatherResponse> {
+            override fun onFailure(p0: Call<WeatherResponse>?, p1: Throwable?) {
+                callback.onWeatherRetrieve(null)
+            }
+
+            override fun onResponse(p0: Call<WeatherResponse>?, p1: Response<WeatherResponse>?) {
+                callback.onWeatherRetrieve(p1!!.body())
+            }
+        })
     }
 }

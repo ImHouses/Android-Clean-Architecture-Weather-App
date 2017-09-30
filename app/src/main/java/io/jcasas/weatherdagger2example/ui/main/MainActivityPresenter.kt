@@ -17,8 +17,11 @@
 package io.jcasas.weatherdagger2example.ui.main
 
 import io.jcasas.weatherdagger2example.data.source.AppDataManager
+import io.jcasas.weatherdagger2example.data.source.DataManager
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import io.jcasas.weatherdagger2example.util.Constants
+import io.jcasas.weatherdagger2example.util.WeatherCallback
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,11 +34,13 @@ class MainActivityPresenter : MainActivityContract.Presenter{
     val view:MainActivityContract.View
 
     val weatherApi:WeatherApi
+    val mDataManager:DataManager
 
 
     constructor(view:MainActivityContract.View) {
         this.view = view
         this.weatherApi = AppDataManager.instance.weatherApi
+        this.mDataManager = AppDataManager.instance
         start()
     }
 
@@ -43,15 +48,15 @@ class MainActivityPresenter : MainActivityContract.Presenter{
         if (lat == null || lon == null) {
             return
         }
-        weatherApi.getCurrentWeather(lat, lon).enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(call: Call<WeatherResponse>?, response: Response<WeatherResponse>?) {
-                view.showWeather(response!!.body())
-                view.hideProgressBar()
-                view.hideRefreshing()
-            }
-
-            override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                view.showErrorAlert(call.toString())
+        mDataManager.getWeather(lat, lon, object : WeatherCallback {
+            override fun onWeatherRetrieve(response: WeatherResponse?) {
+                if (response == null) {
+                    view.showErrorAlert(Constants.Errors.WEATHER_RETRIEVE_ERROR)
+                } else {
+                    view.showWeather(response)
+                    view.hideProgressBar()
+                    view.hideRefreshing()
+                }
             }
         })
     }
