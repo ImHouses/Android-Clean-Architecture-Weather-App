@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">Simple Weather</string>
 
+    <string name="accept_button_string">Accept</string>
+    <string name="cancel_button_string">Cancel</string>
+    <string name="error_title_string">Ups!</string>
+
     <!-- Error strings -->
     <string name="location_permission_error">We need your location in order to provide your weather</string>
 
     <!-- MainActivity strings -->
     <string name="main_toolbar_title">Weather at</string>
+        <!-- MainActivity errors -->
+    <string name="main_weather_error">There has been an error trying to get the current weather. Please, try later.</string>
+
 </resources>
