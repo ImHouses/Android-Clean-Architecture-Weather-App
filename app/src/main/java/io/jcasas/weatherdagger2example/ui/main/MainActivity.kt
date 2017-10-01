@@ -16,20 +16,20 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.di.component.DaggerMainActivityComponent
@@ -40,7 +40,7 @@ import io.jcasas.weatherdagger2example.util.Temp
 import io.jcasas.weatherdagger2example.util.TempConverter
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationListener {
+class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     @Inject
     lateinit var mPresenter:MainActivityContract.Presenter
@@ -51,11 +51,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
 
     lateinit var mTextWeatherDesc:TextView
 
+    lateinit var mTextWeatherTitle:TextView
+
+    lateinit var mWeatherIcon:ImageView
+
     lateinit var mProgressBar:ProgressBar
 
     lateinit var mSwipeRefresh:SwipeRefreshLayout
-
-    lateinit var mLocationManager:LocationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,9 +71,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         mTextCityName = findViewById(R.id.textCityName)
         mTextWeatherDesc = findViewById(R.id.textWeatherDescription)
         mProgressBar = findViewById(R.id.mainProgressBar)
+        mWeatherIcon = findViewById(R.id.weatherIcon)
+        mTextWeatherTitle = findViewById(R.id.weatherTitle)
         mProgressBar.visibility = View.VISIBLE
         mSwipeRefresh = findViewById(R.id.mainSwipeRefreshLayout)
         mSwipeRefresh.setOnRefreshListener { refresh() }
+        supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
+
         mPresenter.start()
     }
 
@@ -116,9 +122,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         }
     }
 
-    fun setLocationListener() {
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100F, this)
+    private fun setLocationListener() {
+        var mFusedLocationClient:FusedLocationProviderClient? = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location: Location? ->
+            if (location != null) {
+                mPresenter.loadWeather(location.latitude, location.longitude)
+                mFusedLocationClient = null
+            }
+        }
     }
 
     override fun showWeather(weatherResponse: WeatherResponse?) {
@@ -130,12 +141,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
                 Temp.CELSIUS).toInt()).toString() + " °C"
         val cityName:String = weatherResponse.name
         val weatherDescription = weatherResponse.weather[0].main
-        val title:String = String.format("%s %s",
-                resources.getText(R.string.main_toolbar_title),
-                cityName)
+        mWeatherIcon.setImageResource(getIconRes(weatherResponse.weather[0].id))
         mTextTemperature.text = temperature
         mTextCityName.text = cityName
-        supportActionBar!!.title = title
+        mTextWeatherTitle.text = String.format(ActivityUtils.getStringByRes(R.string.main_weather_title, this), cityName)
         mTextWeatherDesc.text = weatherDescription
     }
 
@@ -147,20 +156,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         }
     }
 
-    override fun setPresenter(presenter: MainActivityContract.Presenter) {
-
-    }
-
-    override fun onLocationChanged(p0: Location?) {
-        mPresenter.loadWeather(p0!!.latitude, p0!!.longitude)
-        mLocationManager.removeUpdates(this)
-    }
-
-    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) { }
-
-    override fun onProviderEnabled(p0: String?) { }
-
-    override fun onProviderDisabled(p0: String?) { }
+    override fun setPresenter(presenter: MainActivityContract.Presenter) { }
 
     override fun hideRefreshing() {
         mSwipeRefresh.isRefreshing = false
@@ -168,5 +164,19 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
 
     private fun refresh() {
         setLocationListener()
+    }
+
+    private fun getIconRes(id:Int):Int = when(id) {
+        in 200..232 -> R.mipmap.ic_storm
+        in 300..321 -> R.mipmap.ic_rain
+        in 500..504 -> R.mipmap.ic_light_rain
+        511 -> R.mipmap.ic_snowy_rain
+        in 520..531 -> R.mipmap.ic_rain
+        in 600..622 -> R.mipmap.ic_snow
+        in 701..781 -> R.mipmap.ic_fog
+        800 -> R.mipmap.ic_sun
+        801 -> R.mipmap.ic_few_clouds
+        in 802..804 -> R.mipmap.ic_cloudy
+        else -> 0
     }
 }
