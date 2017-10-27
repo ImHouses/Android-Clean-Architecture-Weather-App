@@ -2,6 +2,7 @@ package io.jcasas.weatherdagger2example.di.module
 
 import dagger.Module
 import dagger.Provides
+import io.jcasas.weatherdagger2example.data.source.DataManager
 import io.jcasas.weatherdagger2example.ui.main.MainActivityContract
 import io.jcasas.weatherdagger2example.ui.main.MainActivityPresenter
 
@@ -12,7 +13,7 @@ import io.jcasas.weatherdagger2example.ui.main.MainActivityPresenter
 class MainActivityModule(val view:MainActivityContract.View) {
 
     @Provides
-    fun providePresenter():MainActivityContract.Presenter {
-        return MainActivityPresenter(view)
+    fun providePresenter(dataManager:DataManager): MainActivityContract.Presenter {
+        return MainActivityPresenter(view, dataManager)
     }
 }

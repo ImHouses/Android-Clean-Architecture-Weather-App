@@ -18,13 +18,17 @@ package io.jcasas.weatherdagger2example.di.component
 
 import dagger.Component
 import io.jcasas.weatherdagger2example.data.source.AppDataManager
+import io.jcasas.weatherdagger2example.data.source.DataManager
+import io.jcasas.weatherdagger2example.di.ApplicationScope
 import io.jcasas.weatherdagger2example.di.module.ApiModule
+import javax.inject.Singleton
 
 /**
  * Created by jcasas on 8/11/17.
  */
+@ApplicationScope
 @Component(modules = arrayOf(ApiModule::class))
 interface WeatherAppComponent {
 
-    fun inject(appDataManager: AppDataManager)
+    fun dataManager():DataManager
 }
