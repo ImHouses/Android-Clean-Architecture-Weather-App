@@ -31,26 +31,7 @@ import javax.inject.Inject
 /**
  * Created by jcasas on 8/11/17.
  */
-class AppDataManager private constructor() : DataManager {
-
-    @Inject
-    lateinit var weatherApi: WeatherApi
-
-    init {
-        DaggerWeatherAppComponent.builder()
-                .apiModule(ApiModule())
-                .weatherServiceModule(WeatherServiceModule(Constants.BASE_URL))
-                .build()
-                .inject(this)
-    }
-
-    private object Holder {
-        val INSTANCE = AppDataManager()
-    }
-
-    companion object {
-        val instance: AppDataManager by lazy { Holder.INSTANCE }
-    }
+class AppDataManager(private val weatherApi: WeatherApi) : DataManager {
 
     override fun getWeather(lat: Double, lon: Double, callback: WeatherCallback) {
         weatherApi.getCurrentWeather(lat, lon).enqueue(object : Callback<WeatherResponse> {
