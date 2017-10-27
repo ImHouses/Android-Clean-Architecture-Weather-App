@@ -21,5 +21,6 @@ package io.jcasas.weatherdagger2example.ui
  */
 interface BaseView<P> {
 
-    fun setPresenter(presenter:P)
+    fun injectPresenter()
+
 }
