@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Simple Weather</string>
 
+    <!-- Week days -->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
     <string name="accept_button_string">Accept</string>
     <string name="cancel_button_string">Cancel</string>
     <string name="error_title_string">Ups!</string>
@@ -9,8 +18,12 @@
     <string name="location_permission_error">We need your location in order to provide your weather</string>
 
     <!-- MainActivity strings -->
-    <string name="main_toolbar_title">Weather at</string>
+    <string name="main_weather_title">Weather at %s</string>
         <!-- MainActivity errors -->
     <string name="main_weather_error">There has been an error trying to get the current weather. Please, try later.</string>
+
+    <!-- MainActivity RecyclerView Item strings -->
+    <string name="forecast_item_max">Max temperature %d</string>
+    <string name="forecast_item_min">Min temperature %d</string>
 
 </resources>
