@@ -19,4 +19,4 @@ package io.jcasas.weatherdagger2example.data.source.model
 /**
  * Created by jcasas on 8/10/17.
  */
-class Weather(val id:Integer, val main:String, val description:String)
+class Weather(val id: Int, val main: String, val description: String)
