@@ -16,6 +16,7 @@
 
 package io.jcasas.weatherdagger2example.data.source.external
 
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.util.Constants
 import retrofit2.Call
@@ -27,5 +28,9 @@ class WeatherApi(private val weatherService: WeatherService) {
 
     fun getCurrentWeather(lat:Double, lon:Double): Call<WeatherResponse> {
         return weatherService.getCurrentWeather(lat, lon, Constants.API_KEY)
+    }
+
+    fun getCurrentForecast(lat:Double, lon:Double): Call<ForecastResponse> {
+        return weatherService.get5dayForecast(lat, lon, 6, Constants.API_KEY)
     }
 }
