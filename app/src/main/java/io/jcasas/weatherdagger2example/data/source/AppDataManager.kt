@@ -17,16 +17,13 @@
 package io.jcasas.weatherdagger2example.data.source
 
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
-import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
-import io.jcasas.weatherdagger2example.di.module.ApiModule
-import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
-import io.jcasas.weatherdagger2example.util.Constants
+import io.jcasas.weatherdagger2example.util.OnModelLoaded
 import io.jcasas.weatherdagger2example.util.WeatherCallback
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import javax.inject.Inject
 
 /**
  * Created by jcasas on 8/11/17.
@@ -41,6 +38,18 @@ class AppDataManager(private val weatherApi: WeatherApi) : DataManager {
 
             override fun onResponse(p0: Call<WeatherResponse>?, p1: Response<WeatherResponse>?) {
                 callback.onWeatherRetrieve(p1!!.body())
+            }
+        })
+    }
+
+    override fun getForecast(lat: Double, lon: Double, callback: OnModelLoaded<ForecastResponse>) {
+        weatherApi.getCurrentForecast(lat, lon).enqueue(object: Callback<ForecastResponse> {
+            override fun onFailure(p0: Call<ForecastResponse>?, p1: Throwable?) {
+                callback.onModelLoaded(null)
+            }
+
+            override fun onResponse(p0: Call<ForecastResponse>?, p1: Response<ForecastResponse>?) {
+                callback.onModelLoaded(p1!!.body())
             }
         })
     }

@@ -1,5 +1,7 @@
 package io.jcasas.weatherdagger2example.data.source
 
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
+import io.jcasas.weatherdagger2example.util.OnModelLoaded
 import io.jcasas.weatherdagger2example.util.WeatherCallback
 
 /**
@@ -8,4 +10,7 @@ import io.jcasas.weatherdagger2example.util.WeatherCallback
 interface DataManager {
 
     fun getWeather(lat:Double, lon:Double, callback:WeatherCallback)
+
+    fun getForecast(lat: Double, lon: Double, callback: OnModelLoaded<ForecastResponse>)
+
 }
