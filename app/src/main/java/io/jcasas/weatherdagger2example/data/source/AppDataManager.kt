@@ -17,33 +17,40 @@
 package io.jcasas.weatherdagger2example.data.source
 
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
-import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
-import io.jcasas.weatherdagger2example.di.module.ApiModule
-import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
-import io.jcasas.weatherdagger2example.util.Constants
-import javax.inject.Inject
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
+import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import io.jcasas.weatherdagger2example.util.OnModelLoaded
+import io.jcasas.weatherdagger2example.util.WeatherCallback
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * Created by jcasas on 8/11/17.
  */
-class AppDataManager private constructor() {
+class AppDataManager(private val weatherApi: WeatherApi) : DataManager {
 
-    @Inject
-    lateinit var weatherApi: WeatherApi
+    override fun getWeather(lat: Double, lon: Double, callback: WeatherCallback) {
+        weatherApi.getCurrentWeather(lat, lon).enqueue(object : Callback<WeatherResponse> {
+            override fun onFailure(p0: Call<WeatherResponse>?, p1: Throwable?) {
+                callback.onWeatherRetrieve(null)
+            }
 
-    init {
-        DaggerWeatherAppComponent.builder()
-                .apiModule(ApiModule())
-                .weatherServiceModule(WeatherServiceModule(Constants.BASE_URL))
-                .build()
-                .inject(this)
+            override fun onResponse(p0: Call<WeatherResponse>?, p1: Response<WeatherResponse>?) {
+                callback.onWeatherRetrieve(p1!!.body())
+            }
+        })
     }
 
-    private object Holder {
-        val INSTANCE = AppDataManager()
-    }
+    override fun getForecast(lat: Double, lon: Double, callback: OnModelLoaded<ForecastResponse>) {
+        weatherApi.getCurrentForecast(lat, lon).enqueue(object: Callback<ForecastResponse> {
+            override fun onFailure(p0: Call<ForecastResponse>?, p1: Throwable?) {
+                callback.onModelLoaded(null)
+            }
 
-    companion object {
-        val instance: AppDataManager by lazy { Holder.INSTANCE }
+            override fun onResponse(p0: Call<ForecastResponse>?, p1: Response<ForecastResponse>?) {
+                callback.onModelLoaded(p1!!.body())
+            }
+        })
     }
 }

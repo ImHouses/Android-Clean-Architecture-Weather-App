@@ -16,6 +16,7 @@
 
 package io.jcasas.weatherdagger2example.data.source.external
 
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -27,9 +28,16 @@ import retrofit2.Call
 interface WeatherService {
 
     /* For current forecast. */
-    @GET("weather/")
+    @GET("weather")
     fun getCurrentWeather(@Query("lat") latitude:Double,
                           @Query("lon") longitude:Double,
                           @Query("appid") apiKey:String):Call<WeatherResponse>
+
+    /* 5 day forecast. */
+    @GET("forecast/daily")
+    fun get5dayForecast(@Query("lat") latitude:Double,
+                        @Query("lon") longitude:Double,
+                        @Query("cnt") count:Int,
+                        @Query("appid") apiKey: String):Call<ForecastResponse>
 
 }

@@ -21,7 +21,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.data.source.external.WeatherService
+import io.jcasas.weatherdagger2example.di.ApplicationScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -48,7 +50,8 @@ class WeatherServiceModule(val mBaseUrl:String) {
     }
 
     @Provides
-    fun provideWeatherService(weatherRetrofit:Retrofit):WeatherService {
-        return weatherRetrofit.create(WeatherService::class.java)
+    fun provideWeatherService(retrofit:Retrofit):WeatherService {
+        return retrofit.create(WeatherService::class.java)
     }
+
 }

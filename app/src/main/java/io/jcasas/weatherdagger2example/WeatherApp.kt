@@ -40,7 +40,5 @@ class WeatherApp : Application() {
                 .build()
     }
 
-    fun getAppComponent(): WeatherAppComponent {
-        return mWeatherAppComponent
-    }
+    fun getAppComponent(): WeatherAppComponent = mWeatherAppComponent
 }

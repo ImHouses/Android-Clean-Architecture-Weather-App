@@ -16,30 +16,38 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import io.jcasas.weatherdagger2example.R
+import io.jcasas.weatherdagger2example.WeatherApp
+import io.jcasas.weatherdagger2example.data.source.model.Forecast
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.di.component.DaggerMainActivityComponent
+import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
+import io.jcasas.weatherdagger2example.di.module.ApiModule
 import io.jcasas.weatherdagger2example.di.module.MainActivityModule
+import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Constants
 import io.jcasas.weatherdagger2example.util.Temp
 import io.jcasas.weatherdagger2example.util.TempConverter
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationListener {
+class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     @Inject
     lateinit var mPresenter:MainActivityContract.Presenter
@@ -50,28 +58,40 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
 
     lateinit var mTextWeatherDesc:TextView
 
+    lateinit var mTextWeatherTitle:TextView
+
+    lateinit var mWeatherIcon:ImageView
+
     lateinit var mProgressBar:ProgressBar
 
     lateinit var mSwipeRefresh:SwipeRefreshLayout
 
-    lateinit var mLocationManager:LocationManager
+    lateinit var mForecastList: List<Forecast>
+
+    lateinit var mRecyclerList: RecyclerView
+
+    lateinit var mForecastAdapter: ForecastAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        injectPresenter()
+        bindUi()
+        mPresenter.start()
+    }
 
-        DaggerMainActivityComponent.builder()
-                .mainActivityModule(MainActivityModule(this))
-                .build()
-                .inject(this)
+    private fun bindUi() {
         mTextTemperature = findViewById(R.id.textTemperature)
         mTextCityName = findViewById(R.id.textCityName)
         mTextWeatherDesc = findViewById(R.id.textWeatherDescription)
         mProgressBar = findViewById(R.id.mainProgressBar)
+        mWeatherIcon = findViewById(R.id.weatherIcon)
+        mTextWeatherTitle = findViewById(R.id.weatherTitle)
+        mRecyclerList = findViewById(R.id.rvForecast)
         mProgressBar.visibility = View.VISIBLE
         mSwipeRefresh = findViewById(R.id.mainSwipeRefreshLayout)
         mSwipeRefresh.setOnRefreshListener { refresh() }
-        mPresenter.start()
+        supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
     }
 
     override fun showProgressBar() {
@@ -115,9 +135,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
         }
     }
 
-    fun setLocationListener() {
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100F, this)
+    private fun setLocationListener() {
+        var mFusedLocationClient:FusedLocationProviderClient? = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location: Location? ->
+            if (location != null) {
+                mPresenter.loadWeather(location.latitude, location.longitude)
+                mPresenter.loadForecast(location.latitude, location.longitude)
+                mFusedLocationClient = null
+            }
+        }
     }
 
     override fun showWeather(weatherResponse: WeatherResponse?) {
@@ -128,41 +154,47 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, LocationLis
                 Temp.KELVIN,
                 Temp.CELSIUS).toInt()).toString() + " °C"
         val cityName:String = weatherResponse.name
-        val weatherDescription = weatherResponse.weather.get(0).description
-        mTextTemperature.setText(temperature.toString())
-        mTextCityName.setText(cityName)
-        val title:String = String.format("%s %s",
-                resources.getText(R.string.main_toolbar_title),
-                cityName)
-        supportActionBar!!.setTitle(title)
-        mTextWeatherDesc.setText(weatherDescription)
+        val weatherDescription = weatherResponse.weather[0].main
+        mWeatherIcon.setImageResource(ActivityUtils.getIconRes(weatherResponse.weather[0].id))
+        mTextTemperature.text = temperature
+        mTextCityName.text = cityName
+        mTextWeatherTitle.text = String.format(ActivityUtils.getStringByRes(R.string.main_weather_title, this), cityName)
+        mTextWeatherDesc.text = weatherDescription
     }
 
-    override fun showErrorAlert(message: String) {
+    override fun showForecast(forecastResponse: ForecastResponse) {
+        mForecastList = forecastResponse.list
+        mForecastList.drop(0)
+        mForecastAdapter = ForecastAdapter(mForecastList, this)
+        mRecyclerList.layoutManager = LinearLayoutManager(this)
+        mRecyclerList.addItemDecoration(ForecastAdapter.VerticalSpaceItemDecoration(20))
+        mRecyclerList.isNestedScrollingEnabled = false
+        mRecyclerList.setHasFixedSize(true)
+        mRecyclerList.setAdapter(mForecastAdapter)
     }
 
-    override fun setPresenter(presenter: MainActivityContract.Presenter) {
-
+    override fun showErrorAlert(errorCode: Int) {
+        if (errorCode == Constants.Errors.WEATHER_RETRIEVE_ERROR) {
+            ActivityUtils.createStandardAlert(R.string.error_title_string,
+                    R.string.main_weather_error,
+                    this).show()
+        }
     }
 
-    override fun onLocationChanged(p0: Location?) {
-        mPresenter.loadWeather(p0!!.latitude, p0!!.longitude)
-        mLocationManager.removeUpdates(this)
-    }
-
-    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
-
-    }
-
-    override fun onProviderEnabled(p0: String?) { }
-
-    override fun onProviderDisabled(p0: String?) { }
-
-    fun refresh() {
-        setLocationListener()
+    override fun injectPresenter() {
+        DaggerMainActivityComponent.builder()
+                .weatherAppComponent((application as WeatherApp).getAppComponent())
+                .mainActivityModule(MainActivityModule(this))
+                .build()
+                .inject(this)
     }
 
     override fun hideRefreshing() {
-        mSwipeRefresh.setRefreshing(false)
+        mSwipeRefresh.isRefreshing = false
     }
+
+    private fun refresh() {
+        setLocationListener()
+    }
+
 }

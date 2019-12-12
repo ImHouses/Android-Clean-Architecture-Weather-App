@@ -35,10 +35,9 @@ class SplashScreen : AppCompatActivity(), SplashScreenContract.View {
         setContentView(R.layout.activity_splash_screen)
     }
 
-    override fun setPresenter(p:SplashScreenContract.Presenter) {
-        mPresenter = p
-    }
+    override fun injectPresenter() {
 
+    }
     override fun toMain() {
 
     }

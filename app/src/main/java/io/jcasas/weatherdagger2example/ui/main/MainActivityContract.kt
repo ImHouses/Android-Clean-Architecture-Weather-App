@@ -16,6 +16,7 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.ui.BasePresenter
 import io.jcasas.weatherdagger2example.ui.BaseView
@@ -31,7 +32,9 @@ interface MainActivityContract {
 
         fun showWeather(weatherResponse: WeatherResponse?)
 
-        fun showErrorAlert(message:String)
+        fun showForecast(forecastResponse: ForecastResponse)
+
+        fun showErrorAlert(errorCode:Int)
 
         fun showProgressBar()
 
@@ -39,14 +42,14 @@ interface MainActivityContract {
 
         fun hideRefreshing()
 
-    }
 
+    }
 
     interface Presenter : BasePresenter {
 
         fun loadWeather(lat:Double?, lon:Double?)
 
+        fun loadForecast(lat:Double?, lon:Double?)
     }
-
 
 }

@@ -21,6 +21,12 @@ package io.jcasas.weatherdagger2example.util
  */
 object Constants {
 
+    object Errors {
+
+        val WEATHER_RETRIEVE_ERROR = 1
+
+    }
+
     val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 
     val API_KEY = "02b846e2b73d1c9bdbe10ae62b60de3c"

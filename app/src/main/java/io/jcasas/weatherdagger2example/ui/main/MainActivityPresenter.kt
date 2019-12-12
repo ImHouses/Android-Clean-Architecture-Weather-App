@@ -16,26 +16,23 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
-import io.jcasas.weatherdagger2example.data.source.AppDataManager
-import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
+import io.jcasas.weatherdagger2example.data.source.DataManager
+import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
 import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.jcasas.weatherdagger2example.util.Constants
+import io.jcasas.weatherdagger2example.util.OnModelLoaded
+import io.jcasas.weatherdagger2example.util.WeatherCallback
 
-/**
- * Created by jcasas on 8/12/17.
- */
 class MainActivityPresenter : MainActivityContract.Presenter{
 
     val view:MainActivityContract.View
 
-    val weatherApi:WeatherApi
+    private val mDataManager:DataManager
 
 
-    constructor(view:MainActivityContract.View) {
+    constructor(view:MainActivityContract.View, dataManager: DataManager) {
         this.view = view
-        this.weatherApi = AppDataManager.instance.weatherApi
+        this.mDataManager = dataManager
         start()
     }
 
@@ -43,15 +40,31 @@ class MainActivityPresenter : MainActivityContract.Presenter{
         if (lat == null || lon == null) {
             return
         }
-        weatherApi.getCurrentWeather(lat, lon).enqueue(object : Callback<WeatherResponse> {
-            override fun onResponse(call: Call<WeatherResponse>?, response: Response<WeatherResponse>?) {
-                view.showWeather(response!!.body())
-                view.hideProgressBar()
-                view.hideRefreshing()
+        mDataManager.getWeather(lat, lon, object : WeatherCallback {
+            override fun onWeatherRetrieve(response: WeatherResponse?) {
+                if (response == null) {
+                    view.showErrorAlert(Constants.Errors.WEATHER_RETRIEVE_ERROR)
+                } else {
+                    view.showWeather(response)
+                    view.hideProgressBar()
+                    view.hideRefreshing()
+                }
             }
+        })
+    }
 
-            override fun onFailure(call: Call<WeatherResponse>?, t: Throwable?) {
-                view.showErrorAlert(call.toString())
+    override fun loadForecast(lat: Double?, lon: Double?) {
+        if (lat == null || lon == null) {
+            //Show an error in view.
+            return
+        }
+        mDataManager.getForecast(lat, lon, object : OnModelLoaded<ForecastResponse> {
+            override fun onModelLoaded(model: ForecastResponse?) {
+                if (model == null) {
+                    view.showErrorAlert(Constants.Errors.WEATHER_RETRIEVE_ERROR)
+                } else {
+                    view.showForecast(model)
+                }
             }
         })
     }
