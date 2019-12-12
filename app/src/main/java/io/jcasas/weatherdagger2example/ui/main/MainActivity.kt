@@ -18,13 +18,13 @@ package io.jcasas.weatherdagger2example.ui.main
 
 import android.content.pm.PackageManager
 import android.location.Location
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     lateinit var mProgressBar:ProgressBar
 
-    lateinit var mSwipeRefresh:SwipeRefreshLayout
+    lateinit var mSwipeRefresh: SwipeRefreshLayout
 
     lateinit var mForecastList: List<Forecast>
 

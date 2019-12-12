@@ -18,7 +18,7 @@ package io.jcasas.weatherdagger2example.util
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import io.jcasas.weatherdagger2example.R
 import java.util.*
 
@@ -40,16 +40,19 @@ object ActivityUtils {
     }
 
     fun getIconRes(id:Int):Int = when(id) {
-        in 200..232 -> R.mipmap.ic_storm
-        in 300..321 -> R.mipmap.ic_rain
-        in 500..504 -> R.mipmap.ic_light_rain
-        511 -> R.mipmap.ic_snowy_rain
-        in 520..531 -> R.mipmap.ic_rain
-        in 600..622 -> R.mipmap.ic_snow
-        in 701..781 -> R.mipmap.ic_fog
-        800 -> R.mipmap.ic_sun
-        801 -> R.mipmap.ic_few_clouds
-        in 802..804 -> R.mipmap.ic_cloudy
+        in 200..232 -> R.drawable.ic_storm
+        in 300..321 -> R.drawable.ic_raining
+        in 300..321 -> R.drawable.ic_raining
+        in 500..504 -> R.drawable.ic_light_rain
+        511 -> R.drawable.ic_hail
+        in 520..531 -> R.drawable.ic_raining
+        // TODO Change for Snow
+        in 600..622 -> R.drawable.ic_cloud
+        //
+        in 701..781 -> R.drawable.ic_cloud
+        800 -> R.drawable.ic_sun
+        801 -> R.drawable.ic_cloud
+        in 802..804 -> R.drawable.ic_cloud
         else -> 0
     }
 

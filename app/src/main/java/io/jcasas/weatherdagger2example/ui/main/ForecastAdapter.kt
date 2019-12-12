@@ -2,7 +2,7 @@ package io.jcasas.weatherdagger2example.ui.main
 
 import android.content.Context
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,22 +57,22 @@ class ForecastAdapter(val list:List<Forecast>, val context:Context) :
 
     class VerticalSpaceItemDecoration(val verticalSpace: Int) : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
-            if (parent!!.getChildAdapterPosition(view) != parent.adapter.itemCount -1) {
-                outRect!!.bottom = verticalSpace
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            if (parent.getChildAdapterPosition(view) != parent.adapter!!.itemCount -1) {
+                outRect.bottom = verticalSpace
             }
         }
     }
 
-    override fun onBindViewHolder(holder: ForecastViewHolder?, position: Int) {
-        holder!!.bindData(list[position])
+    override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
+        holder.bindData(list[position])
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ForecastViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.forecast_item, parent,false)
         return ForecastViewHolder(itemView)
     }
