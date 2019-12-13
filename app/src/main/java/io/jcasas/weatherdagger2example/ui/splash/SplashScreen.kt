@@ -18,13 +18,7 @@ package io.jcasas.weatherdagger2example.ui.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import io.jcasas.weatherdagger2example.R
-import io.jcasas.weatherdagger2example.WeatherApp
-import io.jcasas.weatherdagger2example.data.source.model.Weather
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
-import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
-import javax.inject.Inject
 
 class SplashScreen : AppCompatActivity(), SplashScreenContract.View {
 

@@ -1,6 +1,6 @@
 package io.jcasas.weatherdagger2example.data.source
 
-import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
+import com.juancasasm.android.weatherexample.domain.ForecastResponse
 import io.jcasas.weatherdagger2example.util.OnModelLoaded
 import io.jcasas.weatherdagger2example.util.WeatherCallback
 

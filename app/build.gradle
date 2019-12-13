@@ -36,6 +36,7 @@ kapt {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':core')
     kapt 'com.google.dagger:dagger-compiler:2.5'
     kapt 'com.arello-mobile:moxy-compiler:1.1.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'

@@ -34,12 +34,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.WeatherApp
-import io.jcasas.weatherdagger2example.data.source.model.Forecast
-import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import com.juancasasm.android.weatherexample.domain.Forecast
+import com.juancasasm.android.weatherexample.domain.ForecastResponse
+import com.juancasasm.android.weatherexample.domain.WeatherResponse
 import io.jcasas.weatherdagger2example.di.component.DaggerMainActivityComponent
-import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
-import io.jcasas.weatherdagger2example.di.module.ApiModule
 import io.jcasas.weatherdagger2example.di.module.MainActivityModule
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Constants

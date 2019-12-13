@@ -17,8 +17,8 @@
 package io.jcasas.weatherdagger2example.ui.main
 
 import io.jcasas.weatherdagger2example.data.source.DataManager
-import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import com.juancasasm.android.weatherexample.domain.ForecastResponse
+import com.juancasasm.android.weatherexample.domain.WeatherResponse
 import io.jcasas.weatherdagger2example.util.Constants
 import io.jcasas.weatherdagger2example.util.OnModelLoaded
 import io.jcasas.weatherdagger2example.util.WeatherCallback

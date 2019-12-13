@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import io.jcasas.weatherdagger2example.R
-import io.jcasas.weatherdagger2example.data.source.model.Forecast
+import com.juancasasm.android.weatherexample.domain.Forecast
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Temp
 import io.jcasas.weatherdagger2example.util.TempConverter
-import kotlinx.android.synthetic.main.forecast_item.*
 
 class ForecastAdapter(val list:List<Forecast>, val context:Context) :
         RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {

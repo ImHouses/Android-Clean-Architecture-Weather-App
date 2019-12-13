@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.data.source.model
+package com.juancasasm.android.weatherexample.domain
 
 /**
- * Created by jcasas on 8/12/17.
+ * Created by jcasas on 8/10/17.
  */
-class Conditions(val temp:Double, val pressure:Integer, val humidity:Integer)
+data class Coordinates(val lon: Double, val lat: Double)

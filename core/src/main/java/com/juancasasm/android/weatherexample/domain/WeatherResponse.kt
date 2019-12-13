@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.data.source.model
+package com.juancasasm.android.weatherexample.domain
+
+import java.util.*
 
 /**
  * Created by jcasas on 8/10/17.
  */
-class Coord(val lon:Double, val lat:Double)
+class WeatherResponse(val weather:LinkedList<Weather>,
+                      val coordinates: Coordinates,
+                      val id:Integer,
+                      val name:String,
+                      val cod:Integer,
+                      val main: Conditions)

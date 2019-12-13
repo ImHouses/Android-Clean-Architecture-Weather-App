@@ -16,8 +16,6 @@
 
 package io.jcasas.weatherdagger2example.ui.splash
 
-import io.jcasas.weatherdagger2example.data.source.model.Weather
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
 import io.jcasas.weatherdagger2example.ui.BasePresenter
 import io.jcasas.weatherdagger2example.ui.BaseView
 

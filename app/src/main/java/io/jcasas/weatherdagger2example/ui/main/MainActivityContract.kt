@@ -16,8 +16,8 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
-import io.jcasas.weatherdagger2example.data.source.model.ForecastResponse
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import com.juancasasm.android.weatherexample.domain.ForecastResponse
+import com.juancasasm.android.weatherexample.domain.WeatherResponse
 import io.jcasas.weatherdagger2example.ui.BasePresenter
 import io.jcasas.weatherdagger2example.ui.BaseView
 

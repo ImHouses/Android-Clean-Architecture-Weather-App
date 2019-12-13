@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.data.source.model
+package com.juancasasm.android.weatherexample.domain
 
 /**
- * Created by jcasas on 8/10/17.
+ * Created by jcasas on 8/12/17.
  */
-class Weather(val id: Int, val main: String, val description: String)
+class Conditions(val temp:Double, val pressure:Integer, val humidity:Integer)

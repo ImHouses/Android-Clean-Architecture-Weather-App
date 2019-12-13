@@ -1,4 +1,4 @@
-package io.jcasas.weatherdagger2example.data.source.model
+package com.juancasasm.android.weatherexample.domain
 
 /**
  * Created by jcasas on 10/6/17.

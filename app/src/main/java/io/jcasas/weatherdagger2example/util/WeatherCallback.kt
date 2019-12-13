@@ -1,11 +1,11 @@
 package io.jcasas.weatherdagger2example.util
 
-import io.jcasas.weatherdagger2example.data.source.model.WeatherResponse
+import com.juancasasm.android.weatherexample.domain.WeatherResponse
 
 /**
  * Created by jcasas on 9/30/17.
  */
 interface WeatherCallback {
 
-    fun onWeatherRetrieve(response:WeatherResponse?)
+    fun onWeatherRetrieve(response: WeatherResponse?)
 }
