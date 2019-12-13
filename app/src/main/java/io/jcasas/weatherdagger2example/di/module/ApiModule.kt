@@ -6,18 +6,15 @@ import io.jcasas.weatherdagger2example.data.source.AppDataManager
 import io.jcasas.weatherdagger2example.data.source.DataManager
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.data.source.external.WeatherService
-import io.jcasas.weatherdagger2example.di.ActivityScope
-import io.jcasas.weatherdagger2example.di.ApplicationScope
-import javax.inject.Singleton
 
 /**
  * Created by jcasas on 8/11/17.
  */
-@Module(includes = arrayOf(WeatherServiceModule::class))
+@Module(includes = arrayOf(AppModule::class))
 class ApiModule {
 
     @Provides
-    fun provideApi(weatherService:WeatherService): WeatherApi {
+    fun provideApi(weatherService: WeatherService): WeatherApi {
         return WeatherApi(weatherService)
     }
 

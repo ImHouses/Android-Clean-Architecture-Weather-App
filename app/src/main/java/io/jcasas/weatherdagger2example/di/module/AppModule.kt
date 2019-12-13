@@ -16,14 +16,18 @@
 
 package io.jcasas.weatherdagger2example.di.module
 
+import android.app.Application
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.juancasasm.android.weatherexample.data.location.LocationDataSource
 import dagger.Module
 import dagger.Provides
 import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
 import io.jcasas.weatherdagger2example.data.source.external.WeatherService
 import io.jcasas.weatherdagger2example.di.ApplicationScope
+import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
+import io.jcasas.weatherdagger2example.util.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -32,26 +36,28 @@ import javax.inject.Singleton
  * Created by jcasas on 8/6/17.
  */
 @Module
-class WeatherServiceModule(val mBaseUrl:String) {
+class AppModule(private val app: Application) {
 
     @Provides
-    fun provideRetrofit():Retrofit {
+    fun provideRetrofit(gson: Gson):Retrofit {
         return Retrofit.Builder()
-                .baseUrl(mBaseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
     }
 
     @Provides
     fun provideGson(): Gson {
-        return GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create()
+        // Any converters must be provided here.
+        return GsonBuilder().create()
     }
 
     @Provides
-    fun provideWeatherService(retrofit:Retrofit):WeatherService {
+    fun provideWeatherService(retrofit: Retrofit):WeatherService {
         return retrofit.create(WeatherService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideLocationDataSource() : LocationDataSource = AppLocationDataSource(app)
 }

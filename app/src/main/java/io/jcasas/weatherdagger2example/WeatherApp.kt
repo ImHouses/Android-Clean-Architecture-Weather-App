@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,8 @@ import android.app.Application
 import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
 import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
 import io.jcasas.weatherdagger2example.di.module.ApiModule
-import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
+import io.jcasas.weatherdagger2example.di.module.AppModule
 import io.jcasas.weatherdagger2example.util.Constants
-
-
-/**
- * Created by jcasas on 8/6/17.
- */
 
 class WeatherApp : Application() {
 
@@ -36,7 +31,7 @@ class WeatherApp : Application() {
         super.onCreate()
         mWeatherAppComponent = DaggerWeatherAppComponent.builder()
                 .apiModule(ApiModule())
-                .weatherServiceModule(WeatherServiceModule(Constants.BASE_URL))
+                .appModule(AppModule(this))
                 .build()
     }
 
