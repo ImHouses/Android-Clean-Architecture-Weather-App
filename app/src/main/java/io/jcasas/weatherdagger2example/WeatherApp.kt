@@ -17,23 +17,30 @@
 package io.jcasas.weatherdagger2example
 
 import android.app.Application
+import io.jcasas.weatherdagger2example.di.component.ActivityComponent
+import io.jcasas.weatherdagger2example.di.component.DaggerActivityComponent
 import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
 import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
-import io.jcasas.weatherdagger2example.di.module.ApiModule
+import io.jcasas.weatherdagger2example.di.module.DataModule
 import io.jcasas.weatherdagger2example.di.module.AppModule
-import io.jcasas.weatherdagger2example.util.Constants
 
 class WeatherApp : Application() {
 
     private lateinit var mWeatherAppComponent: WeatherAppComponent
+    private lateinit var mUiComponent: ActivityComponent
 
     override fun onCreate() {
         super.onCreate()
         mWeatherAppComponent = DaggerWeatherAppComponent.builder()
-                .apiModule(ApiModule())
                 .appModule(AppModule(this))
+                .dataModule(DataModule())
+                .build()
+        mUiComponent = DaggerActivityComponent.builder()
+                .weatherAppComponent(mWeatherAppComponent)
                 .build()
     }
 
     fun getAppComponent(): WeatherAppComponent = mWeatherAppComponent
+
+    fun getUiInjector(): ActivityComponent = mUiComponent
 }

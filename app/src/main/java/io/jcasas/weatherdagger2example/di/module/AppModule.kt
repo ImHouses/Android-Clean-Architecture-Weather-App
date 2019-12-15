@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,47 +17,27 @@
 package io.jcasas.weatherdagger2example.di.module
 
 import android.app.Application
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.juancasasm.android.weatherexample.data.location.LocationDataSource
+import android.content.Context
+import android.content.SharedPreferences
+import io.jcasas.weatherdagger2example.data.location.LocationDataSource
 import dagger.Module
 import dagger.Provides
-import io.jcasas.weatherdagger2example.data.source.external.WeatherApi
-import io.jcasas.weatherdagger2example.data.source.external.WeatherService
 import io.jcasas.weatherdagger2example.di.ApplicationScope
 import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
 import io.jcasas.weatherdagger2example.util.Constants
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-/**
- * Created by jcasas on 8/6/17.
- */
 @Module
 class AppModule(private val app: Application) {
 
     @Provides
-    fun provideRetrofit(gson: Gson):Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-    }
-
-    @Provides
-    fun provideGson(): Gson {
-        // Any converters must be provided here.
-        return GsonBuilder().create()
-    }
-
-    @Provides
-    fun provideWeatherService(retrofit: Retrofit):WeatherService {
-        return retrofit.create(WeatherService::class.java)
-    }
+    @Singleton
+    fun provideAppContext(): Context = app
 
     @Provides
     @Singleton
-    fun provideLocationDataSource() : LocationDataSource = AppLocationDataSource(app)
+    fun provideGlobalPreferences(): SharedPreferences = app.getSharedPreferences(
+            Constants.Keys.GLOBAL_PREFS_NAME,
+            Context.MODE_PRIVATE
+    )
 }

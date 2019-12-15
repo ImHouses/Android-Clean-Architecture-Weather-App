@@ -16,19 +16,18 @@
 
 package io.jcasas.weatherdagger2example.di.component
 
+import androidx.lifecycle.ViewModelProvider
 import dagger.Component
-import io.jcasas.weatherdagger2example.data.source.AppDataManager
-import io.jcasas.weatherdagger2example.data.source.DataManager
-import io.jcasas.weatherdagger2example.di.ApplicationScope
-import io.jcasas.weatherdagger2example.di.module.ApiModule
+import io.jcasas.weatherdagger2example.di.module.AppModule
+import io.jcasas.weatherdagger2example.di.module.DataModule
+import io.jcasas.weatherdagger2example.di.module.ViewModelModule
 import javax.inject.Singleton
 
-/**
- * Created by jcasas on 8/11/17.
- */
-@ApplicationScope
-@Component(modules = arrayOf(ApiModule::class))
+@Singleton
+@Component(modules = [DataModule::class, AppModule::class, ViewModelModule::class])
 interface WeatherAppComponent {
 
-    fun dataManager():DataManager
+    /* Exposed dependencies. */
+    fun viewModelFactory(): ViewModelProvider.Factory
+
 }
