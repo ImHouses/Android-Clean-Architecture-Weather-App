@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.data.source.external
+package io.jcasas.weatherdagger2example.framework
 
 import io.jcasas.weatherdagger2example.domain.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
@@ -32,8 +32,9 @@ interface WeatherService {
     suspend fun getCurrentWeather(
             @Query("lat") latitude:Double,
             @Query("lon") longitude:Double,
-            @Query("appid") apiKey:String
-    ):Call<WeatherEntity>
+            @Query("appid") apiKey:String,
+            @Query("units") units: String = "metric"
+    ): WeatherEntity
 
     /* 5 day forecast. */
     @GET("forecast/daily")
