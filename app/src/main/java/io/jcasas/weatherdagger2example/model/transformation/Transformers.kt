@@ -11,7 +11,7 @@ object Transformers {
     fun fromDomainWeather(weather: WeatherEntity): Weather = Weather(
             weatherId = weather.weatherId,
             status = weather.status,
-            statusDescription = weather.statusDescription,
+            statusDescription = weather.statusDescription.capitalize(),
             temperature = weather.temperature.toInt(),
             maxTemperature = weather.maxTemperature,
             minTemperature = weather.minTemperature,
