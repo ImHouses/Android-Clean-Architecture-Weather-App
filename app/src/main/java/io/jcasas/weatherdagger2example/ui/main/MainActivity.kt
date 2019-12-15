@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,90 +17,81 @@
 package io.jcasas.weatherdagger2example.ui.main
 
 import android.content.pm.PackageManager
-import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import io.jcasas.weatherdagger2example.R
+import io.jcasas.weatherdagger2example.domain.Forecast
+import io.jcasas.weatherdagger2example.domain.ForecastResponse
+import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
-import com.juancasasm.android.weatherexample.domain.Forecast
-import com.juancasasm.android.weatherexample.domain.ForecastResponse
-import com.juancasasm.android.weatherexample.domain.WeatherResponse
-import io.jcasas.weatherdagger2example.di.component.DaggerMainActivityComponent
-import io.jcasas.weatherdagger2example.di.module.MainActivityModule
+import io.jcasas.weatherdagger2example.model.Weather
+import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Constants
-import io.jcasas.weatherdagger2example.util.Temp
-import io.jcasas.weatherdagger2example.util.TempConverter
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainActivityContract.View {
+class MainActivity : AppCompatActivity() {
+
 
     @Inject
-    lateinit var mPresenter:MainActivityContract.Presenter
+    lateinit var mFactory: ViewModelProvider.Factory
+    private lateinit var mViewModel: MainViewModel
+    private val mForecastList: ArrayList<Forecast> = ArrayList()
+    private val mForecastAdapter: ForecastAdapter = ForecastAdapter(mForecastList)
 
-    lateinit var mTextTemperature:TextView
-
-    lateinit var mTextCityName:TextView
-
-    lateinit var mTextWeatherDesc:TextView
-
-    lateinit var mTextWeatherTitle:TextView
-
-    lateinit var mWeatherIcon:ImageView
-
-    lateinit var mProgressBar:ProgressBar
-
-    lateinit var mSwipeRefresh: SwipeRefreshLayout
-
-    lateinit var mForecastList: List<Forecast>
-
-    lateinit var mRecyclerList: RecyclerView
-
-    lateinit var mForecastAdapter: ForecastAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        injectPresenter()
+        inject()
         bindUi()
-        mPresenter.start()
+        initialize()
     }
 
     private fun bindUi() {
-        mTextTemperature = findViewById(R.id.textTemperature)
-        mTextCityName = findViewById(R.id.textCityName)
-        mTextWeatherDesc = findViewById(R.id.textWeatherDescription)
-        mProgressBar = findViewById(R.id.mainProgressBar)
-        mWeatherIcon = findViewById(R.id.weatherIcon)
-        mTextWeatherTitle = findViewById(R.id.weatherTitle)
-        mRecyclerList = findViewById(R.id.rvForecast)
-        mProgressBar.visibility = View.VISIBLE
-        mSwipeRefresh = findViewById(R.id.mainSwipeRefreshLayout)
-        mSwipeRefresh.setOnRefreshListener { refresh() }
+        mainProgressBar.visibility = View.VISIBLE
+        mainSwipeRefreshLayout.setOnRefreshListener { refresh() }
         supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
+        mViewModel.currentWeatherLiveData.observe(this, Observer { weather ->
+            showWeather(weather)
+            hideProgressBar()
+            hideRefreshing()
+        })
+        rvForecast.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(ForecastAdapter.VerticalSpaceItemDecoration(200))
+            isNestedScrollingEnabled = false
+            setHasFixedSize(true)
+            adapter = mForecastAdapter
+        }
     }
 
-    override fun showProgressBar() {
-        mProgressBar.visibility = View.VISIBLE
+    private fun initialize() {
+        askLocationPermission()
+        showProgressBar()
+        mViewModel.getWeatherAtCurrentLocation()
     }
 
-    override fun hideProgressBar() {
-        mProgressBar.visibility = View.INVISIBLE
+    private fun showProgressBar() {
+        mainProgressBar.visibility = View.VISIBLE
     }
 
-    override fun askLocationPermission() {
+    private fun hideProgressBar() {
+        mainProgressBar.visibility = View.INVISIBLE
+    }
+
+    /**
+     * // TODO Replace for Dexter Implementation.
+     */
+    private fun askLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -113,17 +104,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                         Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
             }
         } else {
-            setLocationListener()
+            mViewModel.getWeatherAtCurrentLocation()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
+    ) {
         when(requestCode) {
             Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
                 if (!grantResults.isEmpty()
                         && grantResults.get(0) == PackageManager.PERMISSION_GRANTED) {
-                    setLocationListener()
+                    mViewModel.getWeatherAtCurrentLocation()
                 }  else {
                     Toast.makeText(this,
                             resources.getText(R.string.location_permission_error),
@@ -133,45 +127,22 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
     }
 
-    private fun setLocationListener() {
-        var mFusedLocationClient:FusedLocationProviderClient? = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location: Location? ->
-            if (location != null) {
-                mPresenter.loadWeather(location.latitude, location.longitude)
-                mPresenter.loadForecast(location.latitude, location.longitude)
-                mFusedLocationClient = null
-            }
-        }
+    private fun showWeather(weather: Weather) {
+        weatherIcon.setImageResource(ActivityUtils.getIconRes(weather.weatherId))
+        val units = if (weather.units == Units.SI) "C" else "F"
+        textTemperature.text = "${weather.temperature} º$units"
+        textCityName.text = weather.locationName
+        weatherTitle.text = String.format(ActivityUtils.getStringByRes(R.string.main_weather_title, this), weather.locationName)
+        textWeatherDescription.text = weather.statusDescription.capitalize()
     }
 
-    override fun showWeather(weatherResponse: WeatherResponse?) {
-        if (weatherResponse == null) {
-            return
-        }
-        val temperature:String = (TempConverter.convert(weatherResponse.main.temp,
-                Temp.KELVIN,
-                Temp.CELSIUS).toInt()).toString() + " °C"
-        val cityName:String = weatherResponse.name
-        val weatherDescription = weatherResponse.weather[0].main
-        mWeatherIcon.setImageResource(ActivityUtils.getIconRes(weatherResponse.weather[0].id))
-        mTextTemperature.text = temperature
-        mTextCityName.text = cityName
-        mTextWeatherTitle.text = String.format(ActivityUtils.getStringByRes(R.string.main_weather_title, this), cityName)
-        mTextWeatherDesc.text = weatherDescription
+    private fun showForecast(forecastResponse: ForecastResponse) {
+        mForecastList.clear()
+        mForecastList.addAll(forecastResponse.list)
+        mForecastAdapter.notifyDataSetChanged()
     }
 
-    override fun showForecast(forecastResponse: ForecastResponse) {
-        mForecastList = forecastResponse.list
-        mForecastList.drop(0)
-        mForecastAdapter = ForecastAdapter(mForecastList, this)
-        mRecyclerList.layoutManager = LinearLayoutManager(this)
-        mRecyclerList.addItemDecoration(ForecastAdapter.VerticalSpaceItemDecoration(20))
-        mRecyclerList.isNestedScrollingEnabled = false
-        mRecyclerList.setHasFixedSize(true)
-        mRecyclerList.setAdapter(mForecastAdapter)
-    }
-
-    override fun showErrorAlert(errorCode: Int) {
+    private fun showErrorAlert(errorCode: Int) {
         if (errorCode == Constants.Errors.WEATHER_RETRIEVE_ERROR) {
             ActivityUtils.createStandardAlert(R.string.error_title_string,
                     R.string.main_weather_error,
@@ -179,20 +150,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
     }
 
-    override fun injectPresenter() {
-        DaggerMainActivityComponent.builder()
-                .weatherAppComponent((application as WeatherApp).getAppComponent())
-                .mainActivityModule(MainActivityModule(this))
-                .build()
-                .inject(this)
+    private fun inject() {
+        (application as WeatherApp).getUiInjector().inject(this)
+        mViewModel = ViewModelProvider(this, mFactory)[MainViewModel::class.java]
     }
 
-    override fun hideRefreshing() {
-        mSwipeRefresh.isRefreshing = false
+    private fun hideRefreshing() {
+        mainSwipeRefreshLayout.isRefreshing = false
     }
 
     private fun refresh() {
-        setLocationListener()
+        mViewModel.getWeatherAtCurrentLocation()
     }
-
 }
