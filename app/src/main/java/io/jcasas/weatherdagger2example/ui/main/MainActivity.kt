@@ -59,6 +59,11 @@ class MainActivity : AppCompatActivity() {
         initialize()
     }
 
+    private fun inject() {
+        (application as WeatherApp).getUiInjector().inject(this)
+        mViewModel = ViewModelProvider(this, mFactory)[MainViewModel::class.java]
+    }
+
     private fun bindUi() {
         mainProgressBar.visibility = View.VISIBLE
         mainSwipeRefreshLayout.setOnRefreshListener { mViewModel.getWeatherAtCurrentLocation() }
@@ -143,10 +148,5 @@ class MainActivity : AppCompatActivity() {
                     R.string.main_weather_error,
                     this).show()
         }
-    }
-
-    private fun inject() {
-        (application as WeatherApp).getUiInjector().inject(this)
-        mViewModel = ViewModelProvider(this, mFactory)[MainViewModel::class.java]
     }
 }
