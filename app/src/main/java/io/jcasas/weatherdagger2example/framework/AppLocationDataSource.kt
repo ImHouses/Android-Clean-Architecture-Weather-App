@@ -3,9 +3,9 @@ package io.jcasas.weatherdagger2example.framework
 import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.juancasasm.android.weatherexample.data.exceptions.LocationNullException
-import com.juancasasm.android.weatherexample.data.location.LocationDataSource
-import com.juancasasm.android.weatherexample.domain.Coordinates
+import io.jcasas.weatherdagger2example.data.exceptions.LocationNullException
+import io.jcasas.weatherdagger2example.data.location.LocationDataSource
+import io.jcasas.weatherdagger2example.domain.Coordinates
 import kotlinx.coroutines.tasks.await
 
 class AppLocationDataSource(private val context: Context) : LocationDataSource {
