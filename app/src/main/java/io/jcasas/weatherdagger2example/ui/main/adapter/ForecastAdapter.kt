@@ -1,6 +1,5 @@
-package io.jcasas.weatherdagger2example.ui.main
+package io.jcasas.weatherdagger2example.ui.main.adapter
 
-import android.content.Context
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import io.jcasas.weatherdagger2example.R
-import com.juancasasm.android.weatherexample.domain.Forecast
+import io.jcasas.weatherdagger2example.domain.Forecast
 import io.jcasas.weatherdagger2example.util.ActivityUtils
-import io.jcasas.weatherdagger2example.util.Temp
-import io.jcasas.weatherdagger2example.util.TempConverter
 
-class ForecastAdapter(val list:List<Forecast>, val context:Context) :
+// TODO Convert to Data Binding.
+class ForecastAdapter(private val list:List<Forecast>) :
         RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
     class ForecastViewHolder : RecyclerView.ViewHolder {
@@ -39,10 +37,10 @@ class ForecastAdapter(val list:List<Forecast>, val context:Context) :
 
         fun bindData(forecast: Forecast) {
             mDayText.setText(ActivityUtils.getDayString(forecast.dt))
-            mIcon.setImageResource(ActivityUtils.getIconRes(forecast.weather[0].id))
+           // mIcon.setImageResource(ActivityUtils.getIconRes(forecast.weather[0].id))
             mTemp.text = TempConverter.convert(forecast.temp.day, Temp.KELVIN, Temp.CELSIUS).toInt().toString()
             mTempUnits.text = "°C"
-            mWeatherDesc.text = forecast.weather[0].main
+            //mWeatherDesc.text = forecast.weather[0].main
             val maxTempString = ActivityUtils.getStringByRes(R.string.forecast_item_max, itemView.context)
             val minTempString = ActivityUtils.getStringByRes(R.string.forecast_item_min, itemView.context)
             mMaxTemp.text = String.format(maxTempString, getCelsius(forecast.temp.max).toInt())
@@ -72,7 +70,9 @@ class ForecastAdapter(val list:List<Forecast>, val context:Context) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
-        val itemView: View = LayoutInflater.from(context).inflate(R.layout.forecast_item, parent,false)
+        val itemView: View = LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.forecast_item, parent,false)
         return ForecastViewHolder(itemView)
     }
 }
