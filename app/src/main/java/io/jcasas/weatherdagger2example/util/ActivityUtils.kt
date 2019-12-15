@@ -31,7 +31,7 @@ object ActivityUtils {
         return AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(R.string.accept_button_string) { dialogInterface: DialogInterface, _: Int -> dialogInterface!!.dismiss() }
+                .setPositiveButton(R.string.accept_button_string) { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
                 .create()
     }
 
