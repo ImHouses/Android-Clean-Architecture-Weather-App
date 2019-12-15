@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import io.jcasas.weatherdagger2example.R
@@ -31,6 +32,7 @@ import io.jcasas.weatherdagger2example.domain.Forecast
 import io.jcasas.weatherdagger2example.domain.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
+import io.jcasas.weatherdagger2example.databinding.ActivityMainBinding
 import io.jcasas.weatherdagger2example.model.Weather
 import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
@@ -44,13 +46,14 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mFactory: ViewModelProvider.Factory
     private lateinit var mViewModel: MainViewModel
+    private lateinit var mBinding: ActivityMainBinding
     private val mForecastList: ArrayList<Forecast> = ArrayList()
     private val mForecastAdapter: ForecastAdapter = ForecastAdapter(mForecastList)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         inject()
         bindUi()
         initialize()
@@ -58,12 +61,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindUi() {
         mainProgressBar.visibility = View.VISIBLE
-        mainSwipeRefreshLayout.setOnRefreshListener { refresh() }
+        mainSwipeRefreshLayout.setOnRefreshListener { mViewModel.getWeatherAtCurrentLocation() }
         supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
         mViewModel.currentWeatherLiveData.observe(this, Observer { weather ->
             showWeather(weather)
-            hideProgressBar()
-            hideRefreshing()
+            mBinding.isLoading = false
+            mBinding.isRefreshing = false
         })
         rvForecast.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -76,16 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initialize() {
         askLocationPermission()
-        showProgressBar()
         mViewModel.getWeatherAtCurrentLocation()
-    }
-
-    private fun showProgressBar() {
-        mainProgressBar.visibility = View.VISIBLE
-    }
-
-    private fun hideProgressBar() {
-        mainProgressBar.visibility = View.INVISIBLE
     }
 
     /**
@@ -104,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                         Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
             }
         } else {
+            mBinding.isLoading = true
             mViewModel.getWeatherAtCurrentLocation()
         }
     }
@@ -130,10 +125,10 @@ class MainActivity : AppCompatActivity() {
     private fun showWeather(weather: Weather) {
         weatherIcon.setImageResource(ActivityUtils.getIconRes(weather.weatherId))
         val units = if (weather.units == Units.SI) "C" else "F"
-        textTemperature.text = "${weather.temperature} º$units"
-        textCityName.text = weather.locationName
-        weatherTitle.text = String.format(ActivityUtils.getStringByRes(R.string.main_weather_title, this), weather.locationName)
-        textWeatherDescription.text = weather.statusDescription.capitalize()
+        mBinding.apply {
+            this.units = units
+            this.weather = weather
+        }
     }
 
     private fun showForecast(forecastResponse: ForecastResponse) {
@@ -153,13 +148,5 @@ class MainActivity : AppCompatActivity() {
     private fun inject() {
         (application as WeatherApp).getUiInjector().inject(this)
         mViewModel = ViewModelProvider(this, mFactory)[MainViewModel::class.java]
-    }
-
-    private fun hideRefreshing() {
-        mainSwipeRefreshLayout.isRefreshing = false
-    }
-
-    private fun refresh() {
-        mViewModel.getWeatherAtCurrentLocation()
     }
 }
