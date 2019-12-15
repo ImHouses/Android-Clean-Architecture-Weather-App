@@ -19,6 +19,7 @@
 
     <!-- MainActivity strings -->
     <string name="main_weather_title">Weather at %s</string>
+    <string name="main_temp_template">%d º%s</string>
         <!-- MainActivity errors -->
     <string name="main_weather_error">There has been an error trying to get the current weather. Please, try later.</string>
 
