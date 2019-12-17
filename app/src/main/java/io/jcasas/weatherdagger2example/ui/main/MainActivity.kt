@@ -16,6 +16,7 @@
 
 package io.jcasas.weatherdagger2example.ui.main
 
+import android.Manifest
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,9 +25,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.domain.Forecast
 import io.jcasas.weatherdagger2example.domain.ForecastResponse
@@ -56,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         inject()
         bindUi()
-        initialize()
+        askLocationPermission()
     }
 
     private fun inject() {
@@ -82,49 +90,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initialize() {
-        askLocationPermission()
-        mViewModel.getWeatherAtCurrentLocation()
-    }
-
-    /**
-     * // TODO Replace for Dexter Implementation.
-     */
     private fun askLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(object : PermissionListener {
+                    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                        mBinding.isLoading = true
+                        mViewModel.getWeatherAtCurrentLocation()
+                    }
 
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                        Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
-            }
-        } else {
-            mBinding.isLoading = true
-            mViewModel.getWeatherAtCurrentLocation()
-        }
-    }
+                    override fun onPermissionRationaleShouldBeShown(
+                            permission: PermissionRequest?,
+                            token: PermissionToken?
+                    ) = Unit
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
-        when(requestCode) {
-            Constants.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
-                if (!grantResults.isEmpty()
-                        && grantResults.get(0) == PackageManager.PERMISSION_GRANTED) {
-                    mViewModel.getWeatherAtCurrentLocation()
-                }  else {
-                    Toast.makeText(this,
-                            resources.getText(R.string.location_permission_error),
-                            Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+                    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                        AlertDialog.Builder(this@MainActivity)
+                                .setTitle(R.string.main_location_permission_title)
+                                .setMessage(R.string.main_location_permission)
+                                .setPositiveButton(android.R.string.ok) { dialogInterface, _ ->
+                                    dialogInterface.dismiss()
+                                    askLocationPermission()
+                                }
+                    }
+                }).check()
     }
 
     private fun showWeather(weather: Weather) {
