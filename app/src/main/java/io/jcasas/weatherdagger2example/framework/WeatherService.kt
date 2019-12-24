@@ -16,15 +16,11 @@
 
 package io.jcasas.weatherdagger2example.framework
 
-import io.jcasas.weatherdagger2example.domain.ForecastResponse
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.Call
 
-/**
- * Created by jcasas on 8/10/17.
- */
 interface WeatherService {
 
     /* For current forecast. */
@@ -37,12 +33,11 @@ interface WeatherService {
     ): WeatherEntity
 
     /* 5 day forecast. */
-    @GET("forecast/daily")
-    fun get5dayForecast(
-            @Query("lat") latitude:Double,
-            @Query("lon") longitude:Double,
-            @Query("cnt") count:Int,
-            @Query("appid") apiKey: String
-    ):Call<ForecastResponse>
-
+    @GET("forecast")
+    suspend fun get5dayForecast(
+            @Query("lat") latitude: Double,
+            @Query("lon") longitude: Double,
+            @Query("appid") apiKey: String,
+            @Query("units") units: String = "metric"
+    ): ForecastResponse
 }

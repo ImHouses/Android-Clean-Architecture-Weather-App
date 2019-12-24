@@ -10,15 +10,15 @@ import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import dagger.Module
 import dagger.Provides
 import io.jcasas.weatherdagger2example.data.config.ConfigurationDataSource
-import io.jcasas.weatherdagger2example.data.location.LocationRepository
-import io.jcasas.weatherdagger2example.data.weather.WeatherRepository
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.framework.WeatherService
-import io.jcasas.weatherdagger2example.di.ApplicationScope
 import io.jcasas.weatherdagger2example.framework.AppConfigDataSource
 import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
 import io.jcasas.weatherdagger2example.framework.AppWeatherDataSource
-import io.jcasas.weatherdagger2example.interactors.GetCurrentWeatherWithLocation
-import io.jcasas.weatherdagger2example.model.deserializer.CurrentWeatherDeserializer
+import io.jcasas.weatherdagger2example.framework.deserializer.CurrentWeatherDeserializer
+import io.jcasas.weatherdagger2example.framework.deserializer.ForecastDeserializer
+import io.jcasas.weatherdagger2example.framework.deserializer.SingleWeekForecastResponseDeserializer
 import io.jcasas.weatherdagger2example.util.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,13 +39,14 @@ class DataModule {
     @Provides
     @Singleton
     fun provideGson(
-            currentWeatherDeserializer: CurrentWeatherDeserializer
-    ): Gson {
-        // Any converters must be provided here.
-        return GsonBuilder()
+            currentWeatherDeserializer: CurrentWeatherDeserializer,
+            forecastDeserializer: ForecastDeserializer,
+            singleWeekForecastDeserializer: SingleWeekForecastResponseDeserializer
+    ): Gson = GsonBuilder()
                 .registerTypeAdapter(WeatherEntity::class.java, currentWeatherDeserializer)
+                .registerTypeAdapter(ForecastEntity::class.java, forecastDeserializer)
+                .registerTypeAdapter(ForecastResponse::class.java, singleWeekForecastDeserializer)
                 .create()
-    }
 
     @Provides
     @Singleton
@@ -72,4 +73,13 @@ class DataModule {
     @Singleton
     fun providePreferencesSource(sharedPreferences: SharedPreferences): ConfigurationDataSource =
             AppConfigDataSource(sharedPreferences)
+
+    @Provides
+    @Singleton
+    fun provideForecastDeserializer(): ForecastDeserializer = ForecastDeserializer()
+
+    @Provides
+    @Singleton
+    fun provideOneWeekForecastDeserializer(): SingleWeekForecastResponseDeserializer =
+            SingleWeekForecastResponseDeserializer()
 }
