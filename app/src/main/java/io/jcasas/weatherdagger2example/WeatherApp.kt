@@ -23,6 +23,7 @@ import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
 import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
 import io.jcasas.weatherdagger2example.di.module.DataModule
 import io.jcasas.weatherdagger2example.di.module.AppModule
+import net.danlew.android.joda.JodaTimeAndroid
 
 class WeatherApp : Application() {
 
@@ -38,6 +39,7 @@ class WeatherApp : Application() {
         mUiComponent = DaggerActivityComponent.builder()
                 .weatherAppComponent(mWeatherAppComponent)
                 .build()
+        JodaTimeAndroid.init(this)
     }
 
     fun getAppComponent(): WeatherAppComponent = mWeatherAppComponent
