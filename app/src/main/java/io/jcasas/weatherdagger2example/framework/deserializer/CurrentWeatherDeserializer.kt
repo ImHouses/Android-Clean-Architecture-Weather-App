@@ -1,4 +1,4 @@
-package io.jcasas.weatherdagger2example.model.deserializer
+package io.jcasas.weatherdagger2example.framework.deserializer
 
 import android.content.SharedPreferences
 import com.google.gson.JsonDeserializationContext
