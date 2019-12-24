@@ -1,6 +1,5 @@
 package io.jcasas.weatherdagger2example.ui.main.adapter
 
-import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import io.jcasas.weatherdagger2example.R
-import io.jcasas.weatherdagger2example.domain.Forecast
+import io.jcasas.weatherdagger2example.domain.Units
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.util.ActivityUtils
+import org.joda.time.format.DateTimeFormat
 
 // TODO Convert to Data Binding.
-class ForecastAdapter(private val list:List<Forecast>) :
+class ForecastAdapter(private val list: List<ForecastEntity>, var units: Units) :
         RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
-    class ForecastViewHolder : RecyclerView.ViewHolder {
+    inner class ForecastViewHolder : RecyclerView.ViewHolder {
 
         var mDayText: TextView
         var mIcon: ImageView
@@ -35,29 +36,18 @@ class ForecastAdapter(private val list:List<Forecast>) :
             mMinTemp = itemView.findViewById(R.id.forecast_item_min)
         }
 
-        fun bindData(forecast: Forecast) {
-            mDayText.setText(ActivityUtils.getDayString(forecast.dt))
-           // mIcon.setImageResource(ActivityUtils.getIconRes(forecast.weather[0].id))
-            mTemp.text = TempConverter.convert(forecast.temp.day, Temp.KELVIN, Temp.CELSIUS).toInt().toString()
-            mTempUnits.text = "°C"
-            //mWeatherDesc.text = forecast.weather[0].main
+        fun bindData(forecast: ForecastEntity) {
+            val format = "EEEE, MMMM dd"
+            val unitsText = if (units == Units.SI) "C" else "F"
+            mDayText.text = DateTimeFormat.forPattern(format).print(forecast.date)
+            mIcon.setImageResource(ActivityUtils.getIconRes(forecast.id))
+            mTemp.text = forecast.temperature.toInt().toString()
+            mTempUnits.text = unitsText
+            mWeatherDesc.text = forecast.status
             val maxTempString = ActivityUtils.getStringByRes(R.string.forecast_item_max, itemView.context)
             val minTempString = ActivityUtils.getStringByRes(R.string.forecast_item_min, itemView.context)
-            mMaxTemp.text = String.format(maxTempString, getCelsius(forecast.temp.max).toInt())
-            mMinTemp.text = String.format(minTempString, getCelsius(forecast.temp.min).toInt())
-        }
-
-        private fun getCelsius(temp: Double): Double {
-            return TempConverter.convert(temp, Temp.KELVIN, Temp.CELSIUS)
-        }
-    }
-
-    class VerticalSpaceItemDecoration(val verticalSpace: Int) : RecyclerView.ItemDecoration() {
-
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            if (parent.getChildAdapterPosition(view) != parent.adapter!!.itemCount -1) {
-                outRect.bottom = verticalSpace
-            }
+            mMaxTemp.text = String.format(maxTempString, forecast.maxTemperature.toInt(), unitsText)
+            mMinTemp.text = String.format(minTempString, forecast.minTemperature.toInt(), unitsText)
         }
     }
 
@@ -65,9 +55,7 @@ class ForecastAdapter(private val list:List<Forecast>) :
         holder.bindData(list[position])
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    override fun getItemCount(): Int = list.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
         val itemView: View = LayoutInflater

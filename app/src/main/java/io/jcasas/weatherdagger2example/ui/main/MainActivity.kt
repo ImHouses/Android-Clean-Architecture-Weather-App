@@ -17,14 +17,10 @@
 package io.jcasas.weatherdagger2example.ui.main
 
 import android.Manifest
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -36,11 +32,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import io.jcasas.weatherdagger2example.R
-import io.jcasas.weatherdagger2example.domain.Forecast
-import io.jcasas.weatherdagger2example.domain.ForecastResponse
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
 import io.jcasas.weatherdagger2example.databinding.ActivityMainBinding
+import io.jcasas.weatherdagger2example.domain.config.Configuration
 import io.jcasas.weatherdagger2example.model.Weather
 import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
@@ -55,9 +52,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var mFactory: ViewModelProvider.Factory
     private lateinit var mViewModel: MainViewModel
     private lateinit var mBinding: ActivityMainBinding
-    private val mForecastList: ArrayList<Forecast> = ArrayList()
-    private val mForecastAdapter: ForecastAdapter = ForecastAdapter(mForecastList)
-
+    private lateinit var mForecastList: ArrayList<ForecastEntity>
+    private lateinit var mForecastAdapter: ForecastAdapter
+    private lateinit var mConfiguration: Configuration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,21 +70,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindUi() {
-        mainProgressBar.visibility = View.VISIBLE
+        mForecastList = ArrayList()
+        mConfiguration = mViewModel.getConfig()
+        mForecastAdapter = ForecastAdapter(mForecastList, mConfiguration.defaultUnits)
+        mBinding.isLoading = true
         mainSwipeRefreshLayout.setOnRefreshListener { mViewModel.getWeatherAtCurrentLocation() }
         supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
+        rvForecast.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            isNestedScrollingEnabled = false
+            setHasFixedSize(true)
+            adapter = mForecastAdapter
+        }
         mViewModel.currentWeatherLiveData.observe(this, Observer { weather ->
             showWeather(weather)
             mBinding.isLoading = false
             mBinding.isRefreshing = false
         })
-        rvForecast.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            addItemDecoration(ForecastAdapter.VerticalSpaceItemDecoration(200))
-            isNestedScrollingEnabled = false
-            setHasFixedSize(true)
-            adapter = mForecastAdapter
-        }
+        mViewModel.forecastLiveData.observe(this, Observer { forecast ->
+            showForecast(forecast)
+            mBinding.isLoading = false
+            mBinding.isRefreshing = false
+        })
     }
 
     private fun askLocationPermission() {
@@ -97,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onPermissionGranted(response: PermissionGrantedResponse?) {
                         mBinding.isLoading = true
                         mViewModel.getWeatherAtCurrentLocation()
+                        mViewModel.fetchOneWeekForecast()
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
@@ -125,9 +130,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showForecast(forecastResponse: ForecastResponse) {
+    private fun showForecast(forecastList: List<ForecastEntity>) {
         mForecastList.clear()
-        mForecastList.addAll(forecastResponse.list)
+        mForecastList.addAll(forecastList)
         mForecastAdapter.notifyDataSetChanged()
     }
 
