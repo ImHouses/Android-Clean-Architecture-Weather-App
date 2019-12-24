@@ -9,6 +9,7 @@ import io.jcasas.weatherdagger2example.domain.Coordinates
 import kotlinx.coroutines.tasks.await
 import org.joda.time.DateTime
 
+// TODO: Persistence of last update time.
 class AppLocationDataSource(private val context: Context) : LocationDataSource {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
