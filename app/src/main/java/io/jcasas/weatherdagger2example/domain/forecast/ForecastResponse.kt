@@ -1,4 +1,4 @@
-package io.jcasas.weatherdagger2example.domain
+package io.jcasas.weatherdagger2example.domain.forecast
 
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 
