@@ -22,11 +22,11 @@ class AppLocationDataSource @Inject constructor(
     private lateinit var lastCoordinates: Coordinates
     private var lastUpdateTime: Long =
             sharedPreferences.getLong(Constants.Keys.LOCATION_LAST_UPDATE, System.currentTimeMillis())
-    private val threshold = 3 * 600_000
+    /* 30 minutes. */
+    private val threshold = 3 * 10 * 60 * 1000
 
     override suspend fun getCurrent(): Coordinates {
         val timeDifference = System.currentTimeMillis() - lastUpdateTime
-        println(System.currentTimeMillis())
         if (timeDifference < threshold && this::lastCoordinates.isInitialized) {
             return lastCoordinates
         }
