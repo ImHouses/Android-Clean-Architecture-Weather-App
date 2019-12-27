@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="org.joda.time.format.DateTimeFormat"/>
         <import type="io.jcasas.weatherdagger2example.domain.Units"/>
@@ -10,9 +13,7 @@
             name="forecast"
             type="io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity" />
     </data>
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.cardview.widget.CardView
         android:id="@+id/forecastItem"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -54,7 +55,6 @@
                     android:id="@+id/forecast_item_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/forecast_item_icon"
                     android:layout_marginLeft="24dp"
                     android:layout_marginStart="24dp"
                     android:textSize="40sp"
@@ -93,10 +93,10 @@
                     android:id="@+id/forecast_item_max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
                     android:textColor="@color/colorWhite"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="31dp"
                     android:textAlignment="center"
                     android:text="@{@string/forecast_item_max((int)forecast.maxTemperature, units == Units.SI ? `ºC` : `ºF`)}"
                     card_view:layout_constraintTop_toTopOf="parent"

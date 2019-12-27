@@ -9,7 +9,6 @@ import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import kotlinx.android.synthetic.main.forecast_item.view.*
 
-// TODO Convert to Data Binding.
 class ForecastAdapter(private val list: List<ForecastEntity>, var units: Units) :
         RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
