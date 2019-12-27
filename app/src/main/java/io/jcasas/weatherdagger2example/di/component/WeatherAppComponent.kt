@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
