@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,32 @@
 package io.jcasas.weatherdagger2example
 
 import android.app.Application
+import io.jcasas.weatherdagger2example.di.component.ActivityComponent
+import io.jcasas.weatherdagger2example.di.component.DaggerActivityComponent
 import io.jcasas.weatherdagger2example.di.component.DaggerWeatherAppComponent
 import io.jcasas.weatherdagger2example.di.component.WeatherAppComponent
-import io.jcasas.weatherdagger2example.di.module.ApiModule
-import io.jcasas.weatherdagger2example.di.module.WeatherServiceModule
-import io.jcasas.weatherdagger2example.util.Constants
-
-
-/**
- * Created by jcasas on 8/6/17.
- */
+import io.jcasas.weatherdagger2example.di.module.DataModule
+import io.jcasas.weatherdagger2example.di.module.AppModule
+import net.danlew.android.joda.JodaTimeAndroid
 
 class WeatherApp : Application() {
 
     private lateinit var mWeatherAppComponent: WeatherAppComponent
+    private lateinit var mUiComponent: ActivityComponent
 
     override fun onCreate() {
         super.onCreate()
         mWeatherAppComponent = DaggerWeatherAppComponent.builder()
-                .apiModule(ApiModule())
-                .weatherServiceModule(WeatherServiceModule(Constants.BASE_URL))
+                .appModule(AppModule(this))
+                .dataModule(DataModule())
                 .build()
+        mUiComponent = DaggerActivityComponent.builder()
+                .weatherAppComponent(mWeatherAppComponent)
+                .build()
+        JodaTimeAndroid.init(this)
     }
 
     fun getAppComponent(): WeatherAppComponent = mWeatherAppComponent
+
+    fun getUiInjector(): ActivityComponent = mUiComponent
 }

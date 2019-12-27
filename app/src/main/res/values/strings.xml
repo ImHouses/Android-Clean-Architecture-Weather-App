@@ -19,11 +19,14 @@
 
     <!-- MainActivity strings -->
     <string name="main_weather_title">Weather at %s</string>
+    <string name="main_temp_template">%d º%s</string>
+    <string name="main_location_permission_title">Location permission</string>
+    <string name="main_location_permission">Location permission is needed in order to give you the weather.</string>
         <!-- MainActivity errors -->
     <string name="main_weather_error">There has been an error trying to get the current weather. Please, try later.</string>
 
     <!-- MainActivity RecyclerView Item strings -->
-    <string name="forecast_item_max">Max temperature %d</string>
-    <string name="forecast_item_min">Min temperature %d</string>
+    <string name="forecast_item_max">Max temperature\n %d º%s</string>
+    <string name="forecast_item_min">Min temperature\n %d º%s</string>
 
 </resources>

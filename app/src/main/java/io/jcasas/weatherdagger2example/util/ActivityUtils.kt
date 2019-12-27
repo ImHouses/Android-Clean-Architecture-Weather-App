@@ -20,6 +20,8 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import io.jcasas.weatherdagger2example.R
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import java.util.*
 
 /**
@@ -27,19 +29,19 @@ import java.util.*
  */
 object ActivityUtils {
 
-    fun createStandardAlert(title:Int, message:Int, context: Context):AlertDialog {
+    fun createStandardAlert(title: Int, message: Int, context: Context): AlertDialog {
         return AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(R.string.accept_button_string) { dialogInterface: DialogInterface, _: Int -> dialogInterface!!.dismiss() }
+                .setPositiveButton(R.string.accept_button_string) { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
                 .create()
     }
 
-    fun getStringByRes(stringId:Int, context: Context):String {
+    fun getStringByRes(stringId: Int, context: Context): String {
         return context.getString(stringId)
     }
 
-    fun getIconRes(id:Int):Int = when(id) {
+    fun getIconRes(id: Int): Int = when (id) {
         in 200..232 -> R.drawable.ic_storm
         in 300..321 -> R.drawable.ic_raining
         in 300..321 -> R.drawable.ic_raining
@@ -54,21 +56,5 @@ object ActivityUtils {
         801 -> R.drawable.ic_cloud
         in 802..804 -> R.drawable.ic_cloud
         else -> 0
-    }
-
-    fun getDayString(date: Long): Int {
-        val date: Date = Date(date * 1000)
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.time = date
-        return when(calendar.get(Calendar.DAY_OF_WEEK)) {
-            Calendar.MONDAY-> R.string.monday
-            Calendar.TUESDAY-> R.string.tuesday
-            Calendar.WEDNESDAY-> R.string.wednesday
-            Calendar.THURSDAY-> R.string.thursday
-            Calendar.FRIDAY-> R.string.friday
-            Calendar.SATURDAY-> R.string.saturday
-            Calendar.SUNDAY-> R.string.sunday
-            else-> -1
-        }
     }
 }

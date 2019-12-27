@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Juan Casas
+ * Copyright 2019, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,26 @@ object Constants {
 
     object Errors {
 
-        val WEATHER_RETRIEVE_ERROR = 1
+        const val WEATHER_RETRIEVE_ERROR = 1
 
     }
 
-    val BASE_URL = "http://api.openweathermap.org/data/2.5/"
+    object Keys {
+        const val GLOBAL_PREFS_NAME: String = "global_prefs"
+        const val UNITS_KEY: String = "units"
+        const val LOCATION_LAST_UPDATE: String = "location_last_update"
+    }
 
-    val API_KEY = "02b846e2b73d1c9bdbe10ae62b60de3c"
+    object Values {
+        const val UNITS_SI: String = "si"
+        const val UNITS_IMPERIAL: String = "imperial"
+    }
 
-    val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+    const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+
+    const val API_KEY = "700ec11b01c5c28b59d8087a038c09c2"
+
+    const val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
+    const val INTERNAL_CONFIG_PREFS: String = "internal_config_prefs"
 }
