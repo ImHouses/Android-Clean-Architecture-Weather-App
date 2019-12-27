@@ -25,6 +25,7 @@ import dagger.Provides
 import io.jcasas.weatherdagger2example.di.ApplicationScope
 import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
 import io.jcasas.weatherdagger2example.util.Constants
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -38,6 +39,14 @@ class AppModule(private val app: Application) {
     @Singleton
     fun provideGlobalPreferences(): SharedPreferences = app.getSharedPreferences(
             Constants.Keys.GLOBAL_PREFS_NAME,
+            Context.MODE_PRIVATE
+    )
+
+    @Provides
+    @Singleton
+    @Named("internal_config")
+    fun provideInternalConfigPrefs(): SharedPreferences = app.getSharedPreferences(
+        Constants.INTERNAL_CONFIG_PREFS,
             Context.MODE_PRIVATE
     )
 }

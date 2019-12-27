@@ -30,6 +30,7 @@ object Constants {
     object Keys {
         const val GLOBAL_PREFS_NAME: String = "global_prefs"
         const val UNITS_KEY: String = "units"
+        const val LOCATION_LAST_UPDATE: String = "location_last_update"
     }
 
     object Values {
@@ -42,4 +43,6 @@ object Constants {
     const val API_KEY = "700ec11b01c5c28b59d8087a038c09c2"
 
     const val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
+    const val INTERNAL_CONFIG_PREFS: String = "internal_config_prefs"
 }

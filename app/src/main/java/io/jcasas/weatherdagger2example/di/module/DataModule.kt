@@ -22,6 +22,7 @@ import io.jcasas.weatherdagger2example.framework.deserializer.SingleWeekForecast
 import io.jcasas.weatherdagger2example.util.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module(includes = [AppModule::class])
@@ -56,8 +57,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideLocationSource(appContext: Context): LocationDataSource =
-            AppLocationDataSource(appContext)
+    fun provideLocationSource(
+            appContext: Context,
+            @Named("internal_config") sharedPreferences: SharedPreferences
+    ): LocationDataSource = AppLocationDataSource(appContext, sharedPreferences)
 
 
     @Provides
