@@ -26,7 +26,7 @@
     <string name="main_weather_error">There has been an error trying to get the current weather. Please, try later.</string>
 
     <!-- MainActivity RecyclerView Item strings -->
-    <string name="forecast_item_max">Max temperature %d º%s</string>
-    <string name="forecast_item_min">Min temperature %d º%s</string>
+    <string name="forecast_item_max">Max temperature\n %d º%s</string>
+    <string name="forecast_item_min">Min temperature\n %d º%s</string>
 
 </resources>
