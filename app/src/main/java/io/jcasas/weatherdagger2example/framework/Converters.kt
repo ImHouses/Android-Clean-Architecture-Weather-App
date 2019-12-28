@@ -3,6 +3,8 @@ package io.jcasas.weatherdagger2example.framework
 import androidx.room.TypeConverter
 import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.Units
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastType
+import org.joda.time.DateTime
 
 /**
  * Class for defining converters for storing complex data types.
@@ -27,4 +29,19 @@ class Converters {
         val values = value.split(",")
         return Coordinates(lon = values[0].toDouble(), lat = values[1].toDouble())
     }
+
+    @TypeConverter
+    fun forecastTypeToString(forecastType: ForecastType): String = forecastType.value
+
+    @TypeConverter
+    fun stringToForecastType(value: String): ForecastType = when (value) {
+        ForecastType.FIVE_DAYS.value -> ForecastType.FIVE_DAYS
+        else -> ForecastType.SIXTEEN_DAYS
+    }
+
+    @TypeConverter
+    fun dateTimeToLong(dateTime: DateTime): Long = dateTime.millis
+
+    @TypeConverter
+    fun longToDateTime(value: Long): DateTime = DateTime(value)
 }

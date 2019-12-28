@@ -6,6 +6,7 @@ import io.jcasas.weatherdagger2example.data.exceptions.ConnectivityException
 import io.jcasas.weatherdagger2example.data.weather.WeatherDataSource
 import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
+import io.jcasas.weatherdagger2example.domain.forecast.ForecastType
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.util.Constants
@@ -29,14 +30,16 @@ class AppWeatherDataSource @Inject constructor(
         val lastUpdated = sharedPreferences.getLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime)
         val timeDifference = currentTime - lastUpdated
         val weatherDao = appDatabase.weatherDao()
-        if (weatherDao.getCount("current") == 0 && !isConnected()) {
+        val databaseCount = weatherDao.getCount("current")
+        if (databaseCount == 0 && !isConnected()) {
             throw ConnectivityException()
         }
-        if (isConnected() && timeDifference < threshold) {
+        if ((isConnected() && timeDifference > threshold) || (isConnected() && databaseCount == 0)) {
             val units = getUnitsForRequest()
             val weatherEntity =
                     weatherService.getCurrentWeather(coordinates.lat, coordinates.lon, key, units)
             weatherDao.insertWeather(WeatherRoomEntity("current", weatherEntity))
+            sharedPreferences.edit().putLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime).apply()
         }
         val savedWeather = weatherDao.getWeather("current")
         /* TODO: Units conversion in case there is a mismatch between the weather ones and the config ones.*/
@@ -44,8 +47,31 @@ class AppWeatherDataSource @Inject constructor(
     }
 
     override suspend fun getForecast(coordinates: Coordinates): List<ForecastEntity> {
-        val units = getUnitsForRequest()
-        return weatherService.get5dayForecast(coordinates.lat, coordinates.lon, key, units).list
+        val currentTime = System.currentTimeMillis()
+        val lastUpdated = sharedPreferences.getLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime)
+        val timeDifference = currentTime - lastUpdated
+        val forecastDao = appDatabase.forecastDao()
+        val databaseCount = forecastDao.getCountByTypeAndLocation(ForecastType.FIVE_DAYS.value, "current")
+        if (databaseCount == 0 && !isConnected()) {
+            throw ConnectivityException()
+        }
+        if ((isConnected() && timeDifference > threshold) || (isConnected() && databaseCount == 0)) {
+            val units = getUnitsForRequest()
+            val forecastList =
+                    weatherService.get5dayForecast(coordinates.lat, coordinates.lon, key, units).list
+            forecastDao.deleteAllByTypeAndLocation(ForecastType.FIVE_DAYS.value, "current")
+            for (forecastEntity in forecastList) {
+                forecastDao.insert(ForecastRoomEntity(
+                        null,
+                        "current",
+                        forecastEntity,
+                        ForecastType.FIVE_DAYS
+                ))
+            }
+            sharedPreferences.edit().putLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime).apply()
+        }
+        val savedForecastList = forecastDao.getByTypeAndLocation(ForecastType.FIVE_DAYS.value, "current")
+        return savedForecastList.map { it.forecastEntity }
     }
 
     private fun getUnitsForRequest(): String {
