@@ -11,7 +11,7 @@ import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import dagger.Module
 import dagger.Provides
 import io.jcasas.weatherdagger2example.data.config.ConfigurationDataSource
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
+import io.jcasas.weatherdagger2example.framework.weather.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.framework.weather.WeatherService
