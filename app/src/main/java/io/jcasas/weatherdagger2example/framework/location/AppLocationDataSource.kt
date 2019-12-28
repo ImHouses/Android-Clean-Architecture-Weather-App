@@ -27,7 +27,7 @@ class AppLocationDataSource @Inject constructor(
 
     override suspend fun getCurrent(): Coordinates {
         val timeDifference = System.currentTimeMillis() - lastUpdateTime
-        if (timeDifference < threshold && this::lastCoordinates.isInitialized) {
+        if (timeDifference > threshold && this::lastCoordinates.isInitialized) {
             return lastCoordinates
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
