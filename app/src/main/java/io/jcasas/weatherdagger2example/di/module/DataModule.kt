@@ -2,6 +2,7 @@ package io.jcasas.weatherdagger2example.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.jcasas.weatherdagger2example.data.location.LocationDataSource
@@ -12,6 +13,7 @@ import dagger.Provides
 import io.jcasas.weatherdagger2example.data.config.ConfigurationDataSource
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
+import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.framework.weather.WeatherService
 import io.jcasas.weatherdagger2example.framework.config.AppConfigDataSource
 import io.jcasas.weatherdagger2example.framework.location.AppLocationDataSource
@@ -67,10 +69,15 @@ class DataModule {
     @Singleton
     fun provideWeatherSource(
             weatherService: WeatherService,
-            sharedPreferences: SharedPreferences
-    ): WeatherDataSource {
-        return AppWeatherDataSource(weatherService, sharedPreferences)
-    }
+            sharedPreferences: SharedPreferences,
+            appDatabase: AppDatabase,
+            connectivityManager: ConnectivityManager
+    ): WeatherDataSource = AppWeatherDataSource(
+            weatherService,
+            sharedPreferences,
+            appDatabase,
+            connectivityManager
+    )
 
     @Provides
     @Singleton
