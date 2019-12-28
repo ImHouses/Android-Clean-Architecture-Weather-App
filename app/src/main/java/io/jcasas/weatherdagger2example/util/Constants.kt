@@ -31,6 +31,7 @@ object Constants {
         const val GLOBAL_PREFS_NAME: String = "global_prefs"
         const val UNITS_KEY: String = "units"
         const val LOCATION_LAST_UPDATE: String = "location_last_update"
+        const val WEATHER_LAST_UPDATE: String = "weather_last_update"
     }
 
     object Values {
