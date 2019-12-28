@@ -8,7 +8,7 @@
             type="io.jcasas.weatherdagger2example.domain.Units" />
         <variable
             name="forecast"
-            type="io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity" />
+            type="io.jcasas.weatherdagger2example.model.Forecast" />
     </data>
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"

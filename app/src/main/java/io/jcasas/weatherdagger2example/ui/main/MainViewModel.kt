@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.jcasas.weatherdagger2example.domain.config.Configuration
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.interactors.GetConfiguration
 import io.jcasas.weatherdagger2example.interactors.GetCurrentWeatherWithLocation
 import io.jcasas.weatherdagger2example.interactors.GetOneWeekForecast
+import io.jcasas.weatherdagger2example.model.Forecast
 import io.jcasas.weatherdagger2example.model.Weather
 import io.jcasas.weatherdagger2example.model.transformation.Transformers
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val currentWeatherLiveData: LiveData<Weather> = MutableLiveData()
-    val forecastLiveData: LiveData<List<ForecastEntity>> = MutableLiveData()
+    val forecastLiveData: LiveData<List<Forecast>> = MutableLiveData()
 
     fun getWeatherAtCurrentLocation() = viewModelScope.launch(Dispatchers.IO) {
         val weather = Transformers.fromDomainWeather(getCurrentWeatherWithLocation())
@@ -30,7 +30,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun fetchOneWeekForecast() = viewModelScope.launch(Dispatchers.IO) {
-        val oneWeekForecast: List<ForecastEntity> = getOneWeekForecast()
+        val oneWeekForecast: List<Forecast> = getOneWeekForecast().map { forecastEntity ->
+            Transformers.fromDomainForecast(forecastEntity)
+        }
         (forecastLiveData as MutableLiveData).postValue(oneWeekForecast)
     }
 

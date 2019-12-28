@@ -20,7 +20,6 @@ import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -32,12 +31,11 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import io.jcasas.weatherdagger2example.R
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
 import io.jcasas.weatherdagger2example.databinding.ActivityMainBinding
 import io.jcasas.weatherdagger2example.domain.config.Configuration
+import io.jcasas.weatherdagger2example.model.Forecast
 import io.jcasas.weatherdagger2example.model.Weather
 import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mFactory: ViewModelProvider.Factory
     private lateinit var mViewModel: MainViewModel
     private lateinit var mBinding: ActivityMainBinding
-    private lateinit var mForecastList: ArrayList<ForecastEntity>
+    private lateinit var mForecastList: ArrayList<Forecast>
     private lateinit var mForecastAdapter: ForecastAdapter
     private lateinit var mConfiguration: Configuration
 
@@ -130,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showForecast(forecastList: List<ForecastEntity>) {
+    private fun showForecast(forecastList: List<Forecast>) {
         mForecastList.clear()
         mForecastList.addAll(forecastList)
         mForecastAdapter.notifyDataSetChanged()
