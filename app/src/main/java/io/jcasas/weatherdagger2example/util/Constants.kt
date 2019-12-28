@@ -46,4 +46,6 @@ object Constants {
     const val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
 
     const val INTERNAL_CONFIG_PREFS: String = "internal_config_prefs"
+
+    const val DATABASE_NAME: String = "app_database"
 }

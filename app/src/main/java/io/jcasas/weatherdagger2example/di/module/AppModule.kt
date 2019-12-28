@@ -19,8 +19,11 @@ package io.jcasas.weatherdagger2example.di.module
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import dagger.Module
 import dagger.Provides
+import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.util.Constants
 import javax.inject.Named
 import javax.inject.Singleton
@@ -46,4 +49,9 @@ class AppModule(private val app: Application) {
         Constants.INTERNAL_CONFIG_PREFS,
             Context.MODE_PRIVATE
     )
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(): AppDatabase =
+            Room.databaseBuilder(app, AppDatabase::class.java, Constants.DATABASE_NAME).build()
 }
