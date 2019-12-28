@@ -1,4 +1,4 @@
-package io.jcasas.weatherdagger2example.framework
+package io.jcasas.weatherdagger2example.framework.weather
 
 import android.content.SharedPreferences
 import io.jcasas.weatherdagger2example.data.weather.WeatherDataSource

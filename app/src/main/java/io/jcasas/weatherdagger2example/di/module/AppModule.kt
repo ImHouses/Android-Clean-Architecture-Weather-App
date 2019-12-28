@@ -19,11 +19,8 @@ package io.jcasas.weatherdagger2example.di.module
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import io.jcasas.weatherdagger2example.data.location.LocationDataSource
 import dagger.Module
 import dagger.Provides
-import io.jcasas.weatherdagger2example.di.ApplicationScope
-import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
 import io.jcasas.weatherdagger2example.util.Constants
 import javax.inject.Named
 import javax.inject.Singleton

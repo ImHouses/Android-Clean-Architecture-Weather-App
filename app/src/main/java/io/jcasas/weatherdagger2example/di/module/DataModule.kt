@@ -12,10 +12,10 @@ import dagger.Provides
 import io.jcasas.weatherdagger2example.data.config.ConfigurationDataSource
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
-import io.jcasas.weatherdagger2example.framework.WeatherService
-import io.jcasas.weatherdagger2example.framework.AppConfigDataSource
-import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
-import io.jcasas.weatherdagger2example.framework.AppWeatherDataSource
+import io.jcasas.weatherdagger2example.framework.weather.WeatherService
+import io.jcasas.weatherdagger2example.framework.config.AppConfigDataSource
+import io.jcasas.weatherdagger2example.framework.location.AppLocationDataSource
+import io.jcasas.weatherdagger2example.framework.weather.AppWeatherDataSource
 import io.jcasas.weatherdagger2example.framework.deserializer.CurrentWeatherDeserializer
 import io.jcasas.weatherdagger2example.framework.deserializer.ForecastDeserializer
 import io.jcasas.weatherdagger2example.framework.deserializer.SingleWeekForecastResponseDeserializer
