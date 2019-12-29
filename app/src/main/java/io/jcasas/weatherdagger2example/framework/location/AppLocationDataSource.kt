@@ -25,6 +25,7 @@ class AppLocationDataSource @Inject constructor(
     /* 30 minutes. */
     private val threshold = 3 * 10 * 60 * 1000
 
+    // TODO: Save Location in SharedPrefs.
     override suspend fun getCurrent(): Coordinates {
         val timeDifference = System.currentTimeMillis() - lastUpdateTime
         if (timeDifference > threshold && this::lastCoordinates.isInitialized) {
