@@ -23,7 +23,7 @@ class AppWeatherDataSource @Inject constructor(
 
     private val key: String = Constants.API_KEY
     /* 3 hours. */
-    private val threshold: Long = 3 * 60 * 60 * 10000
+    private val threshold: Long = 3 * 60 * 60 * 1000
 
     override suspend fun getCurrent(coordinates: Coordinates): WeatherEntity {
         val currentTime = System.currentTimeMillis()
