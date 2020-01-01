@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package io.jcasas.weatherdagger2example.framework
+package io.jcasas.weatherdagger2example.framework.weather
 
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import retrofit2.http.GET
 import retrofit2.http.Query

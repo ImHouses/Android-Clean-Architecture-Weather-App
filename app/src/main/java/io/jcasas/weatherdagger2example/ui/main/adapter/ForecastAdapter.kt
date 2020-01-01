@@ -5,19 +5,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.jcasas.weatherdagger2example.databinding.ForecastItemBinding
 import io.jcasas.weatherdagger2example.domain.Units
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
+import io.jcasas.weatherdagger2example.model.Forecast
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import kotlinx.android.synthetic.main.forecast_item.view.*
 
-// TODO Convert to Data Binding.
-class ForecastAdapter(private val list: List<ForecastEntity>, var units: Units) :
+class ForecastAdapter(private val list: List<Forecast>, var units: Units) :
         RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
 
     inner class ForecastViewHolder(
             private val binding: ForecastItemBinding
     ) :RecyclerView.ViewHolder(binding.root) {
 
-        fun bindData(forecast: ForecastEntity) {
+        fun bindData(forecast: Forecast) {
             binding.apply {
                 this.forecast = forecast
                 this.units = this@ForecastAdapter.units

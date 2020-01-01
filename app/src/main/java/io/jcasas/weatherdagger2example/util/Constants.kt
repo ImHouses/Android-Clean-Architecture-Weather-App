@@ -31,6 +31,7 @@ object Constants {
         const val GLOBAL_PREFS_NAME: String = "global_prefs"
         const val UNITS_KEY: String = "units"
         const val LOCATION_LAST_UPDATE: String = "location_last_update"
+        const val WEATHER_LAST_UPDATE: String = "weather_last_update"
     }
 
     object Values {
@@ -45,4 +46,6 @@ object Constants {
     const val MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
 
     const val INTERNAL_CONFIG_PREFS: String = "internal_config_prefs"
+
+    const val DATABASE_NAME: String = "app_database"
 }

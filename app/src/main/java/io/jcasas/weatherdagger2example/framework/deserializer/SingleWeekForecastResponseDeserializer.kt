@@ -3,7 +3,7 @@ package io.jcasas.weatherdagger2example.framework.deserializer
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
+import io.jcasas.weatherdagger2example.framework.weather.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import java.lang.reflect.Type
 

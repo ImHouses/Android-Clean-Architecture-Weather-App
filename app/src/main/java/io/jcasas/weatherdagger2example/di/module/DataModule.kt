@@ -2,6 +2,7 @@ package io.jcasas.weatherdagger2example.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.jcasas.weatherdagger2example.data.location.LocationDataSource
@@ -10,12 +11,13 @@ import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import dagger.Module
 import dagger.Provides
 import io.jcasas.weatherdagger2example.data.config.ConfigurationDataSource
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastResponse
+import io.jcasas.weatherdagger2example.framework.weather.ForecastResponse
 import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
-import io.jcasas.weatherdagger2example.framework.WeatherService
-import io.jcasas.weatherdagger2example.framework.AppConfigDataSource
-import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
-import io.jcasas.weatherdagger2example.framework.AppWeatherDataSource
+import io.jcasas.weatherdagger2example.framework.AppDatabase
+import io.jcasas.weatherdagger2example.framework.weather.WeatherService
+import io.jcasas.weatherdagger2example.framework.config.AppConfigDataSource
+import io.jcasas.weatherdagger2example.framework.location.AppLocationDataSource
+import io.jcasas.weatherdagger2example.framework.weather.AppWeatherDataSource
 import io.jcasas.weatherdagger2example.framework.deserializer.CurrentWeatherDeserializer
 import io.jcasas.weatherdagger2example.framework.deserializer.ForecastDeserializer
 import io.jcasas.weatherdagger2example.framework.deserializer.SingleWeekForecastResponseDeserializer
@@ -67,10 +69,15 @@ class DataModule {
     @Singleton
     fun provideWeatherSource(
             weatherService: WeatherService,
-            sharedPreferences: SharedPreferences
-    ): WeatherDataSource {
-        return AppWeatherDataSource(weatherService, sharedPreferences)
-    }
+            sharedPreferences: SharedPreferences,
+            appDatabase: AppDatabase,
+            connectivityManager: ConnectivityManager
+    ): WeatherDataSource = AppWeatherDataSource(
+            weatherService,
+            sharedPreferences,
+            appDatabase,
+            connectivityManager
+    )
 
     @Provides
     @Singleton
