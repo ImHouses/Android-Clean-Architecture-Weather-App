@@ -24,6 +24,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import dagger.Module
 import dagger.Provides
+import io.jcasas.weatherdagger2example.data.exceptions.AppErrorHandler
+import io.jcasas.weatherdagger2example.domain.ErrorHandler
 import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.util.Constants
 import javax.inject.Named
@@ -61,4 +63,8 @@ class AppModule(private val app: Application) {
     fun provideConnectivityManager(): ConnectivityManager {
         return app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
+
+    @Provides
+    @Singleton
+    fun provideErrorHandler(): ErrorHandler = AppErrorHandler()
 }
