@@ -25,6 +25,8 @@ class AppWeatherDataSource @Inject constructor(
     /* 3 hours. */
     private val threshold: Long = 3 * 60 * 60 * 1000
 
+    // TODO: Move some code to the WeatherRepository, logic with data should be there.
+    // This class should only have functions for retrieving data from a source.
     override suspend fun getCurrent(coordinates: Coordinates): WeatherEntity {
         val currentTime = System.currentTimeMillis()
         val lastUpdated = sharedPreferences.getLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime)
