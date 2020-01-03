@@ -6,9 +6,10 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import io.jcasas.weatherdagger2example.ui.main.MainActivity
 
+// TODO: Register Activity on Manifest.
 class SplashScreenActivity : AppCompatActivity() {
 
-
+    // TODO: Add functionality for first time loading (Permissions request screen goes here).
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Handler().run {
