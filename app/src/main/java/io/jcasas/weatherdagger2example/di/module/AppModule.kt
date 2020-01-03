@@ -22,6 +22,8 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import io.jcasas.weatherdagger2example.data.exceptions.AppErrorHandler
@@ -55,8 +57,17 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(): AppDatabase =
-            Room.databaseBuilder(app, AppDatabase::class.java, Constants.DATABASE_NAME).build()
+    fun provideAppDatabase(): AppDatabase {
+        val MIGRATION_2_TO_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE weathers ADD COLUMN lastUpdate INTEGER")
+            }
+        }
+        return Room.databaseBuilder(app, AppDatabase::class.java, Constants.DATABASE_NAME)
+                .addMigrations(MIGRATION_2_TO_3)
+                .build()
+    }
+
 
     @Provides
     @Singleton

@@ -19,8 +19,10 @@ package io.jcasas.weatherdagger2example.ui.main
 import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -43,9 +45,31 @@ import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import org.joda.time.DateTime
+import org.joda.time.Period
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        @JvmStatic
+        @BindingAdapter("lastUpdate")
+        fun TextView.bindLastUpdate(dateTime: DateTime?) {
+            if (dateTime == null) {
+                text = ""
+                return
+            }
+            val period = Period(dateTime, DateTime.now())
+            val template = context.getString(R.string.last_update_template)
+            val timePart = when {
+                period.days > 0 -> "${period.days} days"
+                period.hours > 0 -> "${period.hours} hours"
+                period.minutes > 0 -> "${period.minutes} minutes"
+                else -> context.getString(R.string.moments_ago)
+            }
+            text = String.format(template, timePart)
+        }
+    }
 
 
     @Inject

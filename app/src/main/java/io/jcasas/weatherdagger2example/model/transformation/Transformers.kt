@@ -19,7 +19,8 @@ object Transformers {
             minTemperature = weather.minTemperature,
             units = weather.units,
             locationName = weather.locationName,
-            coordinates = weather.coordinates
+            coordinates = weather.coordinates,
+            lastUpdate = weather.lastUpdate
     )
 
     fun fromDomainForecast(forecastEntity: ForecastEntity): Forecast = Forecast(

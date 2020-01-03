@@ -48,15 +48,25 @@
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"/>
+                <TextView
+                    android:id="@+id/text_main_last_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textSize="16sp"
+                    app:lastUpdate="@{weather.lastUpdate}"
+                    card_view:layout_constraintTop_toBottomOf="@id/cardMainTitle"
+                    card_view:layout_constraintStart_toStartOf="@id/cardMainTitle"
+                    tools:text="Last Update: 6 hours ago."/>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardMainWeather"
-                    android:layout_marginTop="15dp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     card_view:cardCornerRadius="4dp"
-                    card_view:layout_constraintTop_toBottomOf="@+id/cardMainTitle"
+                    card_view:layout_constraintTop_toBottomOf="@+id/text_main_last_update"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent">
                     <LinearLayout

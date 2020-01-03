@@ -8,6 +8,7 @@ import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import io.jcasas.weatherdagger2example.util.Constants
+import org.joda.time.DateTime
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -38,7 +39,8 @@ class CurrentWeatherDeserializer @Inject constructor(
                 mainObject["temp_max"].asDouble,
                 if (units == Constants.Values.UNITS_SI) Units.SI else Units.IMPERIAL,
                 jsonObject["name"].asString,
-                coordinates
+                coordinates,
+                DateTime.now()
         )
     }
 }

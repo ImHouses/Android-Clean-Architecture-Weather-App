@@ -8,7 +8,7 @@ import io.jcasas.weatherdagger2example.framework.weather.ForecastRoomEntity
 import io.jcasas.weatherdagger2example.framework.weather.WeatherDao
 import io.jcasas.weatherdagger2example.framework.weather.WeatherRoomEntity
 
-@Database(entities = [WeatherRoomEntity::class, ForecastRoomEntity::class], version = 2)
+@Database(entities = [WeatherRoomEntity::class, ForecastRoomEntity::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

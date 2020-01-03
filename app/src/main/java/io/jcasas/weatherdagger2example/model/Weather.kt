@@ -2,6 +2,7 @@ package io.jcasas.weatherdagger2example.model
 
 import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.Units
+import org.joda.time.DateTime
 
 data class Weather(
         val weatherId: Int,
@@ -12,5 +13,6 @@ data class Weather(
         val maxTemperature: Double,
         val units: Units,
         val locationName: String,
-        val coordinates: Coordinates
+        val coordinates: Coordinates,
+        val lastUpdate: DateTime?
 )
