@@ -21,12 +21,6 @@ package io.jcasas.weatherdagger2example.util
  */
 object Constants {
 
-    object Errors {
-
-        const val WEATHER_RETRIEVE_ERROR = 1
-
-    }
-
     object Keys {
         const val GLOBAL_PREFS_NAME: String = "global_prefs"
         const val UNITS_KEY: String = "units"
