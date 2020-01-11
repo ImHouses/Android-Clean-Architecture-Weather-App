@@ -1,4 +1,4 @@
-package io.jcasas.weatherdagger2example.framework
+package io.jcasas.weatherdagger2example.framework.location
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -25,9 +25,10 @@ class AppLocationDataSource @Inject constructor(
     /* 30 minutes. */
     private val threshold = 3 * 10 * 60 * 1000
 
+    // TODO: Save Location in SharedPrefs.
     override suspend fun getCurrent(): Coordinates {
         val timeDifference = System.currentTimeMillis() - lastUpdateTime
-        if (timeDifference < threshold && this::lastCoordinates.isInitialized) {
+        if (timeDifference > threshold && this::lastCoordinates.isInitialized) {
             return lastCoordinates
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)

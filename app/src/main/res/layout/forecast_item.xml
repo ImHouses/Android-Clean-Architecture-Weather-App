@@ -11,7 +11,7 @@
             type="io.jcasas.weatherdagger2example.domain.Units" />
         <variable
             name="forecast"
-            type="io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity" />
+            type="io.jcasas.weatherdagger2example.model.Forecast" />
     </data>
     <androidx.cardview.widget.CardView
         android:id="@+id/forecastItem"
@@ -98,7 +98,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textAlignment="center"
-                    android:text="@{@string/forecast_item_max((int)forecast.maxTemperature, units == Units.SI ? `ºC` : `ºF`)}"
+                    android:text="@{@string/forecast_item_max((int)forecast.maxTemperature, units == Units.SI ? `C` : `F`)}"
                     card_view:layout_constraintTop_toTopOf="parent"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +112,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/colorWhite"
                     android:textAlignment="center"
-                    android:text="@{@string/forecast_item_min((int)forecast.minTemperature, units == Units.SI ? `ºC` : `ºF`)}"
+                    android:text="@{@string/forecast_item_min((int)forecast.minTemperature, units == Units.SI ? `C` : `F`)}"
                     card_view:layout_constraintTop_toBottomOf="@id/forecast_item_max"
                     card_view:layout_constraintStart_toStartOf="@id/forecast_item_max"
                     card_view:layout_constraintEnd_toEndOf="@id/forecast_item_max"

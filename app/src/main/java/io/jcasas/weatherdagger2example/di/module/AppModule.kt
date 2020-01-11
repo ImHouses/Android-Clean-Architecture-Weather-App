@@ -19,11 +19,16 @@ package io.jcasas.weatherdagger2example.di.module
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import io.jcasas.weatherdagger2example.data.location.LocationDataSource
+import android.net.ConnectivityManager
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
-import io.jcasas.weatherdagger2example.di.ApplicationScope
-import io.jcasas.weatherdagger2example.framework.AppLocationDataSource
+import io.jcasas.weatherdagger2example.data.exceptions.AppErrorHandler
+import io.jcasas.weatherdagger2example.domain.ErrorHandler
+import io.jcasas.weatherdagger2example.framework.AppDatabase
 import io.jcasas.weatherdagger2example.util.Constants
 import javax.inject.Named
 import javax.inject.Singleton
@@ -49,4 +54,28 @@ class AppModule(private val app: Application) {
         Constants.INTERNAL_CONFIG_PREFS,
             Context.MODE_PRIVATE
     )
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(): AppDatabase {
+        val MIGRATION_2_TO_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE weathers ADD COLUMN lastUpdate INTEGER")
+            }
+        }
+        return Room.databaseBuilder(app, AppDatabase::class.java, Constants.DATABASE_NAME)
+                .addMigrations(MIGRATION_2_TO_3)
+                .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(): ConnectivityManager {
+        return app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideErrorHandler(): ErrorHandler = AppErrorHandler()
 }

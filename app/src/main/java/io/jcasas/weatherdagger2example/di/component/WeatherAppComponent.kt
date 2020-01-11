@@ -20,11 +20,12 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Component
 import io.jcasas.weatherdagger2example.di.module.AppModule
 import io.jcasas.weatherdagger2example.di.module.DataModule
+import io.jcasas.weatherdagger2example.di.module.FrameworkDataModule
 import io.jcasas.weatherdagger2example.di.module.ViewModelModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DataModule::class, AppModule::class, ViewModelModule::class])
+@Component(modules = [FrameworkDataModule::class, DataModule::class, AppModule::class, ViewModelModule::class])
 interface WeatherAppComponent {
 
     /* Exposed dependencies. */
