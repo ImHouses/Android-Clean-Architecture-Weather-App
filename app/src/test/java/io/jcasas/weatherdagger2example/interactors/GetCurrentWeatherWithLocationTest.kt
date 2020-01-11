@@ -7,7 +7,6 @@ import io.jcasas.weatherdagger2example.data.weather.WeatherRepository
 import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.ErrorEntity
 import io.jcasas.weatherdagger2example.domain.Units
-import io.jcasas.weatherdagger2example.domain.forecast.ForecastEntity
 import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 import io.jcasas.weatherdagger2example.util.Resource
 import kotlinx.coroutines.runBlocking
@@ -15,25 +14,29 @@ import org.joda.time.DateTime
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import java.io.IOException
 import java.net.SocketTimeoutException
 
 class GetCurrentWeatherWithLocationTest {
 
     private lateinit var SUT: GetCurrentWeatherWithLocation
-    private val weatherRepo: WeatherRepo = WeatherRepo()
-    private val locationRepo: LocationRepo = LocationRepo()
+    private lateinit var weatherRepoMock: WeatherRepository
+    private lateinit var locationRepoMock: LocationRepository
 
     @Before
     fun setup() {
-        SUT = GetCurrentWeatherWithLocation(weatherRepo, locationRepo, AppErrorHandler())
+        weatherRepoMock = mock(WeatherRepository::class.java)
+        locationRepoMock = mock(LocationRepository::class.java)
+        SUT = GetCurrentWeatherWithLocation(weatherRepoMock, locationRepoMock, AppErrorHandler())
     }
 
     // getCurrentWeather fails location
     @Test
     fun `getCurrentWeather failsLocation locationErrorEntityExpected`() {
-        locationRepo.errorMode = true
         runBlocking {
+            `when`(locationRepoMock.getCurrentLocation()).thenAnswer { throw LocationNullException() }
             val value = SUT()
             assert(value is Resource.Error<WeatherEntity>)
             val errorEntity = value as Resource.Error<WeatherEntity>
@@ -45,8 +48,9 @@ class GetCurrentWeatherWithLocationTest {
     // getCurrentWeather fails call to web service
     @Test
     fun `getCurrentWeather failsCallToWebService serviceUnavailableErrorEntityExpected`() {
-        weatherRepo.serviceErrorMode = true
         runBlocking {
+            locationSuccess()
+            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { throw SocketTimeoutException() }
             val value = SUT()
             assert(value is Resource.Error<WeatherEntity>)
             val errorEntity = (value as Resource.Error<WeatherEntity>).errorEntity
@@ -58,8 +62,9 @@ class GetCurrentWeatherWithLocationTest {
     // getCurrentWeather network unavailable Network Error Entity expected
     @Test
     fun `getCurrentWeather notNetwork networkErrorEntityExpected`() {
-        weatherRepo.networkErrorMode = true
         runBlocking {
+            locationSuccess()
+            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { throw IOException() }
             val value = SUT()
             assert(value is Resource.Error<WeatherEntity>)
             val errorEntity = (value as Resource.Error<WeatherEntity>).errorEntity
@@ -71,41 +76,18 @@ class GetCurrentWeatherWithLocationTest {
     @Test
     fun `getCurrentWeather success weatherEntityExpected`() {
         runBlocking {
+            locationSuccess()
+            val expectedResult = WeatherEntity(1, "Clouds", "Description", 40.1, 20.2, 42.0, Units.SI, "Mexico", Coordinates(0.0, 0.0), DateTime.now())
+            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { expectedResult }
             val value = SUT()
             assert(value is Resource.Success<WeatherEntity>)
             Assert.assertNotNull((value as Resource.Success).data)
         }
     }
 
-    inner class WeatherRepo : WeatherRepository {
-
-        var networkErrorMode: Boolean = false
-        var serviceErrorMode: Boolean = false
-
-        override suspend fun getCurrent(coordinates: Coordinates): WeatherEntity {
-            if (networkErrorMode) {
-                throw IOException()
-            } else if (serviceErrorMode) {
-                throw SocketTimeoutException()
-            } else {
-                return WeatherEntity(1, "Clouds", "Description", 40.1, 20.2, 42.0, Units.SI, "Mexico", Coordinates(0.0, 0.0), DateTime.now())
-            }
-        }
-
-        override suspend fun getOneWeekForecast(coordinates: Coordinates): List<ForecastEntity> {
-            return listOf()
-        }
+    private suspend fun locationSuccess() {
+        `when`(locationRepoMock.getCurrentLocation()).thenAnswer { Coordinates(0.0, 0.0) }
     }
 
-    inner class LocationRepo : LocationRepository {
-
-        var errorMode: Boolean = false
-
-        override suspend fun getCurrentLocation(): Coordinates {
-            if (errorMode) {
-                throw LocationNullException()
-            }
-            return Coordinates(lat = 37.4219999, lon = -122.0862462)
-        }
-    }
+    private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
 }
