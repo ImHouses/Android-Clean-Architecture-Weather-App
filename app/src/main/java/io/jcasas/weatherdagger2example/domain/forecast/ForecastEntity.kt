@@ -2,7 +2,7 @@ package io.jcasas.weatherdagger2example.domain.forecast
 
 import org.joda.time.DateTime
 
-class ForecastEntity(
+data class ForecastEntity(
         val id: Int,
         val date: DateTime,
         val temperature: Double,
