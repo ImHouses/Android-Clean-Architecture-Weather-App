@@ -5,6 +5,12 @@
     <string name="generic_error">There has been an error.</string>
     <string name="moments_ago">A moments</string>
     <string name="last_update_template">Last Update: %s ago</string>
+    <string name="day">day</string>
+    <string name="days">days</string>
+    <string name="hour">hour</string>
+    <string name="hours">hours</string>
+    <string name="minute">minute</string>
+    <string name="minutes">minutes</string>
 
     <string name="accept_button_string">Accept</string>
     <string name="cancel_button_string">Cancel</string>

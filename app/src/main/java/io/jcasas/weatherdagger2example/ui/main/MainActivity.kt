@@ -62,9 +62,12 @@ class MainActivity : AppCompatActivity() {
             val period = Period(dateTime, DateTime.now())
             val template = context.getString(R.string.last_update_template)
             val timePart = when {
-                period.days > 0 -> "${period.days} days"
-                period.hours > 0 -> "${period.hours} hours"
-                period.minutes > 0 -> "${period.minutes} minutes"
+                period.days == 1 -> "${period.days} ${context.getString(R.string.day)}"
+                period.hours == 1 -> "${period.hours} ${context.getString(R.string.hour)}"
+                period.minutes == 1 -> "${period.minutes} ${context.getString(R.string.minute)}"
+                period.days > 0 -> "${period.days} ${context.getString(R.string.days)}"
+                period.hours > 0 -> "${period.hours} ${context.getString(R.string.hours)}"
+                period.minutes > 0 -> "${period.minutes} ${context.getString(R.string.minutes)}"
                 else -> context.getString(R.string.moments_ago)
             }
             text = String.format(template, timePart)
