@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Juan Casas
+ * Copyright 2020, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,14 +101,12 @@ class MainActivity : AppCompatActivity() {
         mConfiguration = mViewModel.getConfig()
         mForecastAdapter = ForecastAdapter(mForecastList, mConfiguration.defaultUnits)
         mBinding.isLoading = true
-        mainSwipeRefreshLayout.setOnRefreshListener { mViewModel.getWeatherAtCurrentLocation() }
-        supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
-        rvForecast.apply {
+        /*rvForecast.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             isNestedScrollingEnabled = false
             setHasFixedSize(true)
             adapter = mForecastAdapter
-        }
+        }*/
         mViewModel.currentWeatherLiveData.observe(this, Observer { weatherResource ->
             showWeather(weatherResource)
             mBinding.isLoading = false
@@ -152,7 +150,6 @@ class MainActivity : AppCompatActivity() {
         when (resource) {
             is Resource.Success -> {
                 val weather = resource.data
-                weatherIcon.setImageResource(ActivityUtils.getIconRes(weather.weatherId))
                 val units = if (weather.units == Units.SI) "C" else "F"
                 mBinding.apply {
                     this.units = units
@@ -183,13 +180,13 @@ class MainActivity : AppCompatActivity() {
     private fun showErrorSnackbar(error: ErrorEntity) {
         if (error is ErrorEntity.Network || error is ErrorEntity.ServiceUnavailable) {
             Snackbar.make(
-                    mainSwipeRefreshLayout,
+                    mainContainer,
                     R.string.main_weather_error,
                     Snackbar.LENGTH_SHORT
             ).show()
         } else {
             Snackbar.make(
-                    mainSwipeRefreshLayout,
+                    mainContainer,
                     R.string.generic_error,
                     Snackbar.LENGTH_SHORT
             ).show()
