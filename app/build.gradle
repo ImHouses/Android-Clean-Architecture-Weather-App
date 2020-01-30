@@ -12,12 +12,12 @@ android {
         pickFirst 'protobuf.meta'
     }
 
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "io.jcasas.weatherdagger2example"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
         versionName "0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
