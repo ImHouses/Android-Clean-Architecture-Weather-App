@@ -38,7 +38,7 @@ kapt {
 }
 
 dependencies {
-    def lifecycle_version = "2.1.0"
+    def lifecycle_version = "2.2.0"
     def room_version = "2.2.3"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
