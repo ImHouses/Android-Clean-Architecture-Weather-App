@@ -37,6 +37,8 @@ class AppConfigDataSourceTest {
             verify(sharedPrefsMock, times(1)).getString(capture(), capture())
             assertEquals(Constants.Keys.UNITS_KEY, firstValue)
             assertEquals(Constants.Values.UNITS_SI, secondValue)
+            verify(sharedPrefsMock, times(1)).getLong(capture(), any())
+            assertEquals(Constants.Keys.WEATHER_LAST_UPDATE, thirdValue)
         }
     }
 

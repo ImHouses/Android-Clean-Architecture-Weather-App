@@ -20,7 +20,8 @@ class AppConfigDataSource @Inject constructor(
                 Constants.Values.UNITS_SI
         )
         return Configuration(
-                if (savedUnits == Constants.Values.UNITS_SI) Units.SI else Units.IMPERIAL
+                if (savedUnits == Constants.Values.UNITS_SI) Units.SI else Units.IMPERIAL,
+                sharedPreferences.getLong(Constants.Keys.WEATHER_LAST_UPDATE, System.currentTimeMillis())
         )
     }
 
