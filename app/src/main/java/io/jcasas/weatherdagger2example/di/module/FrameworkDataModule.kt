@@ -75,8 +75,7 @@ class FrameworkDataModule {
     ): WeatherDataSource = AppWeatherDataSource(
             weatherService,
             sharedPreferences,
-            appDatabase,
-            connectivityManager
+            appDatabase
     )
 
     @Provides
