@@ -26,7 +26,6 @@ class AppWeatherDataSource @Inject constructor(
         val currentTime = System.currentTimeMillis()
         val lastUpdated = sharedPreferences.getLong(Constants.Keys.WEATHER_LAST_UPDATE, currentTime)
         val timeDifference = currentTime - lastUpdated
-        val weatherDao = appDatabase.weatherDao()
         val databaseCount = weatherDao.getCount("current")
         if (databaseCount == 0 && !isConnected()) {
             throw ConnectivityException()
