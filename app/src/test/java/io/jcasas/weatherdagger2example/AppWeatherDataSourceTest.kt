@@ -21,7 +21,6 @@ class AppWeatherDataSourceTest {
 
     private lateinit var SUT: AppWeatherDataSource
     private lateinit var weatherServiceMock: WeatherService
-    private lateinit var sharedPrefsMock: SharedPreferences
     private lateinit var appDbMock: AppDatabase
     private lateinit var weatherDaoMock: WeatherDao
     private lateinit var forecastDao: ForecastDao
@@ -32,7 +31,6 @@ class AppWeatherDataSourceTest {
     @Before
     fun setup() {
         weatherServiceMock = mock()
-        sharedPrefsMock = mock()
         appDbMock = mock()
         weatherDaoMock = mock()
         forecastDao = mock()
@@ -61,7 +59,6 @@ class AppWeatherDataSourceTest {
         )
         SUT = AppWeatherDataSource(
                 weatherServiceMock,
-                sharedPrefsMock,
                 appDbMock
         )
     }

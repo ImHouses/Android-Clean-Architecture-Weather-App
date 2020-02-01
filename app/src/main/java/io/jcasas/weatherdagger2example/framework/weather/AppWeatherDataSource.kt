@@ -1,8 +1,5 @@
 package io.jcasas.weatherdagger2example.framework.weather
 
-import android.content.SharedPreferences
-import android.net.ConnectivityManager
-import io.jcasas.weatherdagger2example.data.exceptions.ConnectivityException
 import io.jcasas.weatherdagger2example.data.weather.WeatherDataSource
 import io.jcasas.weatherdagger2example.domain.Coordinates
 import io.jcasas.weatherdagger2example.domain.Units
@@ -132,11 +129,4 @@ class AppWeatherDataSource @Inject constructor(
             ))
         }
     }
-
-
-    // TODO: Change to a not deprecated implementation.
-    /*private fun isConnected(): Boolean {
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }*/
 }
