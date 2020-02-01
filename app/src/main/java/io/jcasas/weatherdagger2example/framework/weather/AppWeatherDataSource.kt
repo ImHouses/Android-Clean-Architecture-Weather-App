@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @Singleton
 class AppWeatherDataSource @Inject constructor(
         private val weatherService: WeatherService,
-        private val sharedPreferences: SharedPreferences,
         private val appDatabase: AppDatabase
 ) : WeatherDataSource {
 
