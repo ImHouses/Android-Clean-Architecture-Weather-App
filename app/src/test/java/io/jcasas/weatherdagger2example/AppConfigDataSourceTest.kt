@@ -1,3 +1,5 @@
+package io.jcasas.weatherdagger2example
+
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
