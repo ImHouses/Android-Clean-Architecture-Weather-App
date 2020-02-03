@@ -11,6 +11,8 @@
     <string name="hours">hours</string>
     <string name="minute">minute</string>
     <string name="minutes">minutes</string>
+    <string name="speed_metric">m/s</string>
+    <string name="speed_imperial">miles/hour</string>
 
     <string name="accept_button_string">Accept</string>
     <string name="cancel_button_string">Cancel</string>
@@ -24,6 +26,8 @@
     <string name="main_temp_template">%d º%s</string>
     <string name="main_location_permission_title">Location permission</string>
     <string name="main_location_permission">Location permission is needed in order to give you the weather.</string>
+    <string name="main_humidity_template">Humidity %d%%</string>
+    <string name="main_wind_template">Wind Speed \n %.2f %s</string>
     <!-- MainActivity errors -->
     <string name="main_weather_error">Failed to load current weather.</string>
 

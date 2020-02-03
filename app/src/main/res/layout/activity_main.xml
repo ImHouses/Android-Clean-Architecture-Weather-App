@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="android.view.View"/>
+        <import type="io.jcasas.weatherdagger2example.domain.Units"/>
         <variable
             name="weather"
             type="io.jcasas.weatherdagger2example.model.Weather" />
@@ -89,6 +90,7 @@
             app:layout_constraintTop_toBottomOf="@id/text_main_last_update"
             app:layout_constraintStart_toStartOf="@id/text_main_last_update"/>
         <TextView
+            android:id="@+id/text_main_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
@@ -103,23 +105,29 @@
             android:id="@+id/text_main_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="15dp"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             app:fontFamily="@font/raleway_regular"
+            android:text="@{@string/main_humidity_template(weather.humidity), default=` `}"
             tools:text="Humidity 23%"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/text_main_temperature"
-            app:layout_constraintTop_toTopOf="@id/text_main_temperature"/>
+            app:layout_constraintTop_toTopOf="@id/text_main_temperature"
+            app:layout_constraintBottom_toTopOf="@id/text_main_wind_speed"/>
         <TextView
+            android:id="@+id/text_main_wind_speed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             app:fontFamily="@font/raleway_regular"
+            android:text="@{weather.units == Units.SI ? @string/main_wind_template(weather.windSpeed, @string/speed_metric) : @string/main_wind_template(weather.windSpeed, @string/speed_imperial), default=` `}"
             tools:text="Wind Speed\n4.23 m/s"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/text_main_humidity"
-            app:layout_constraintTop_toBottomOf="@id/text_main_humidity"/>
+            app:layout_constraintTop_toBottomOf="@id/text_main_humidity"
+            app:layout_constraintBottom_toBottomOf="@id/text_main_description"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
