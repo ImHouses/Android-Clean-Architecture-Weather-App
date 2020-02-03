@@ -25,11 +25,11 @@ class AppWeatherRepository @Inject constructor(
         if (savedWeather == null && networkStatus == NetworkStatus.NOT_CONNECTED) {
             throw ConnectivityException()
         }
-        if (config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
+        if (savedWeather == null || config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
             val retrievedWeather = dataSource.getCurrentWeatherFromService(coordinates, savedUnits)
             dataSource.saveCurrentWeatherToLocal(retrievedWeather)
         }
-        return dataSource.getCurrentWeatherFromLocal(savedUnits)!!
+        return dataSource.getCurrentWeatherFromLocal(savedUnits) ?: throw IllegalStateException()
     }
 
     override suspend fun get5DayCurrentForecast(coordinates: Coordinates): List<ForecastEntity> {

@@ -45,7 +45,9 @@ class AppWeatherRepositoryTest {
                 Units.IMPERIAL,
                 "MX",
                 Coordinates(1.1, -1.0),
-                null
+                null,
+                1.1,
+                1.1
         )
         forecastListMock = mutableListOf(
                 ForecastEntity(

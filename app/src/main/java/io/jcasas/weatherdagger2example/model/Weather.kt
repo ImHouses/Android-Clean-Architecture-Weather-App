@@ -14,5 +14,7 @@ data class Weather(
         val units: Units,
         val locationName: String,
         val coordinates: Coordinates,
-        val lastUpdate: DateTime?
+        val lastUpdate: DateTime?,
+        val humidity: Int,
+        val windSpeed: Double
 )
