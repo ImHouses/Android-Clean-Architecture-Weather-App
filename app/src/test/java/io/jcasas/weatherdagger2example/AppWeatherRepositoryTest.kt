@@ -106,6 +106,40 @@ class AppWeatherRepositoryTest {
     @Test
     fun get5DayCurrentForecast() {
         // TODO
+        runBlocking {
+            try {
+                forecastSrcLocalEmpty()
+                notConnected()
+                SUT.get5DayCurrentForecast(Coordinates(0.0, 0.0))
+                verify(weatherSrcMock, times(1)).getCurrent5DayForecastFromLocal(any())
+                verify(configSrcMock, times(1)).getConfiguration()
+                verify(configSrcMock, times(1)).getNetworkStatus()
+            } catch (exception: Exception) {
+                assert(exception is ConnectivityException)
+            }
+            thresholdExpired()
+            connected()
+            forecastSrcSuccessFromService()
+            forecastSrcLocalNotEmpty()
+            argumentCaptor<List<ForecastEntity>> {
+                val result = SUT.get5DayCurrentForecast(Coordinates(0.0, 0.0))
+                verify(configSrcMock, times(2)).getConfiguration()
+                verify(configSrcMock, times(2)).getNetworkStatus()
+                verify(weatherSrcMock, times(1)).getCurrent5DayForecastFromService(any(), any())
+                verify(weatherSrcMock, times(1)).saveCurrent5DayForecastToLocal(capture())
+                verify(weatherSrcMock, times(3)).getCurrent5DayForecastFromLocal(any())
+                assertEquals(firstValue, result)
+            }
+            thresholdNotExpired()
+            connected()
+            val result = SUT.get5DayCurrentForecast(Coordinates(0.0, 0.0))
+            verify(configSrcMock, times(3)).getConfiguration()
+            verify(configSrcMock, times(3)).getNetworkStatus()
+            verify(weatherSrcMock, times(1)).getCurrent5DayForecastFromService(any(), any())
+            verify(weatherSrcMock, times(1)).saveCurrent5DayForecastToLocal(any())
+            verify(weatherSrcMock, times(5)).getCurrent5DayForecastFromLocal(any())
+            assertEquals(forecastListMock, result)
+        }
     }
 
     private fun notConnected() {
@@ -114,6 +148,14 @@ class AppWeatherRepositoryTest {
 
     private fun connected() {
         whenever(configSrcMock.getNetworkStatus()).thenReturn(NetworkStatus.CONNECTED)
+    }
+
+    private suspend fun forecastSrcLocalEmpty() {
+        whenever(weatherSrcMock.getCurrent5DayForecastFromLocal(any())).thenReturn(listOf())
+    }
+
+    private suspend fun forecastSrcLocalNotEmpty() {
+        whenever(weatherSrcMock.getCurrent5DayForecastFromLocal(any())).thenReturn(forecastListMock)
     }
 
     private suspend fun weatherSrcLocalEmpty() {
@@ -132,6 +174,11 @@ class AppWeatherRepositoryTest {
     private suspend fun weatherSrcSuccessFromService() {
         whenever(weatherSrcMock.getCurrentWeatherFromService(any(), any()))
                 .thenReturn(weatherEntityMock)
+    }
+
+    private suspend fun forecastSrcSuccessFromService() {
+        whenever(weatherSrcMock.getCurrent5DayForecastFromService(any(),any()))
+                .thenReturn(forecastListMock)
     }
 
     private fun thresholdExpired() {
