@@ -72,11 +72,34 @@ class AppWeatherRepositoryTest {
                 assert(exception is ConnectivityException)
             }
             // TODO: Case when the time difference between the last update is greater than the threshold.
-            // In that case, the repository should only check of internet connection
+            // In that case, the repository should only check for internet connection
             // If there is internet connection then the repository gets the most recent
             // weather for the "current" location.
             // Then it must be saved to the local.
-            // TODO: Case when at the end of the function the saved weather is returned.
+            thresholdExpired()
+            connected()
+            weatherSrcSuccessFromService()
+            weatherSrcLocalNotEmpty()
+            argumentCaptor<WeatherEntity> {
+                val result = SUT.getCurrentWeather(Coordinates(0.0, 0.0))
+                verify(configSrcMock, times(2)).getConfiguration()
+                verify(configSrcMock, times(2)).getNetworkStatus()
+                verify(weatherSrcMock, times(1)).getCurrentWeatherFromService(any(), any())
+                verify(weatherSrcMock, times(1)).saveCurrentWeatherToLocal(capture())
+                verify(weatherSrcMock, times(3)).getCurrentWeatherFromLocal(any())
+                assertEquals(firstValue, result)
+            }
+            thresholdNotExpired()
+            connected()
+            argumentCaptor<WeatherEntity> {
+                val result = SUT.getCurrentWeather(Coordinates(0.0, 0.0))
+                verify(configSrcMock, times(3)).getConfiguration()
+                verify(configSrcMock, times(3)).getNetworkStatus()
+                verify(weatherSrcMock, times(1)).getCurrentWeatherFromService(any(), any())
+                verify(weatherSrcMock, times(1)).saveCurrentWeatherToLocal(any())
+                verify(weatherSrcMock, times(5)).getCurrentWeatherFromLocal(any())
+                assertEquals(weatherEntityMock, result)
+            }
         }
     }
 
@@ -97,6 +120,10 @@ class AppWeatherRepositoryTest {
         whenever(weatherSrcMock.getCurrentWeatherFromLocal(any())).thenReturn(null)
     }
 
+    private suspend fun weatherSrcLocalNotEmpty() {
+        whenever(weatherSrcMock.getCurrentWeatherFromLocal(any())).thenReturn(weatherEntityMock)
+    }
+
     private suspend fun weatherSrcErrorFromService(exceptionClass: KClass<out Throwable>) {
         whenever(weatherSrcMock.getCurrentWeatherFromService(any(), any()))
                 .thenThrow(createInstance(exceptionClass))
@@ -105,5 +132,16 @@ class AppWeatherRepositoryTest {
     private suspend fun weatherSrcSuccessFromService() {
         whenever(weatherSrcMock.getCurrentWeatherFromService(any(), any()))
                 .thenReturn(weatherEntityMock)
+    }
+
+    private fun thresholdExpired() {
+        whenever(configSrcMock.getConfiguration()).thenReturn(
+                Configuration(Units.SI, Long.MAX_VALUE)
+        )
+    }
+    private fun thresholdNotExpired() {
+        whenever(configSrcMock.getConfiguration()).thenReturn(
+                Configuration(Units.SI, -1)
+        )
     }
 }

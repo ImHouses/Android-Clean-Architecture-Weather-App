@@ -19,15 +19,17 @@ class AppWeatherRepository @Inject constructor(
 
     override suspend fun getCurrentWeather(coordinates: Coordinates): WeatherEntity {
         val networkStatus = configurationDataSource.getNetworkStatus()
-        val savedUnits = configurationDataSource.getConfiguration().defaultUnits
+        val config = configurationDataSource.getConfiguration()
+        val savedUnits = config.defaultUnits
         val savedWeather = dataSource.getCurrentWeatherFromLocal(savedUnits)
         if (savedWeather == null && networkStatus == NetworkStatus.NOT_CONNECTED) {
             throw ConnectivityException()
         }
-        return dataSource.getCurrentWeatherFromService(
-                coordinates,
-                configurationDataSource.getConfiguration().defaultUnits
-        )
+        if (config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
+            val retrievedWeather = dataSource.getCurrentWeatherFromService(coordinates, savedUnits)
+            dataSource.saveCurrentWeatherToLocal(retrievedWeather)
+        }
+        return dataSource.getCurrentWeatherFromLocal(savedUnits)!!
     }
 
     override suspend fun get5DayCurrentForecast(coordinates: Coordinates): List<ForecastEntity> =
