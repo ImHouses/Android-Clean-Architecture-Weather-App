@@ -104,8 +104,8 @@ class AppWeatherDataSource @Inject constructor(
             coordinates: Coordinates,
             units: Units
     ): List<ForecastEntity> = weatherService.get5dayForecast(
-                coordinates.lon,
                 coordinates.lat,
+                coordinates.lon,
                 key,
                 units.value
         ).list

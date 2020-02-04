@@ -15,7 +15,7 @@ class AppWeatherRepository @Inject constructor(
 
     // TODO: Move threshold to the configuration.
     /* 3 hours. */
-    private val threshold: Long = 3 * 60 * 60 * 1000
+    private val threshold: Long = 1_000 * 60 * 60 * 3
 
     override suspend fun getCurrentWeather(coordinates: Coordinates): WeatherEntity {
         val networkStatus = configurationDataSource.getNetworkStatus()
@@ -25,10 +25,11 @@ class AppWeatherRepository @Inject constructor(
         if (savedWeather == null && networkStatus == NetworkStatus.NOT_CONNECTED) {
             throw ConnectivityException()
         }
-        if (savedWeather == null || config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
+        val expired = System.currentTimeMillis() - config.lastCurrentWeatherUpdate > threshold
+        if (savedWeather == null || expired) {
             val retrievedWeather = dataSource.getCurrentWeatherFromService(coordinates, savedUnits)
-            configurationDataSource.saveLastUpdate(System.currentTimeMillis())
             dataSource.saveCurrentWeatherToLocal(retrievedWeather)
+            configurationDataSource.saveLastUpdate(System.currentTimeMillis())
         }
         return dataSource.getCurrentWeatherFromLocal(savedUnits) ?: throw IllegalStateException()
     }
@@ -41,7 +42,8 @@ class AppWeatherRepository @Inject constructor(
         if (savedForecast.isEmpty() && networkStatus == NetworkStatus.NOT_CONNECTED) {
             throw ConnectivityException()
         }
-        if (config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
+        val expired = System.currentTimeMillis() - config.lastCurrentWeatherUpdate > threshold
+        if (savedForecast.isEmpty() || expired) {
             val retrievedForecast =
                     dataSource.getCurrent5DayForecastFromService(coordinates, savedUnits)
             dataSource.saveCurrent5DayForecastToLocal(retrievedForecast)

@@ -26,7 +26,7 @@ class AppConfigDataSource @Inject constructor(
     }
 
     override fun saveLastUpdate(lastUpdate: Long) {
-        sharedPreferences.edit().putLong(Constants.Keys.WEATHER_LAST_UPDATE, lastUpdate)
+        sharedPreferences.edit().putLong(Constants.Keys.WEATHER_LAST_UPDATE, lastUpdate).apply()
     }
 
     // TODO: Replace for a not deprecated implementation.
