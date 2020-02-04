@@ -7,5 +7,7 @@ interface ConfigurationDataSource {
 
     fun getConfiguration(): Configuration
 
+    fun saveLastUpdate(lastUpdate: Long)
+
     fun getNetworkStatus(): NetworkStatus
 }
