@@ -101,7 +101,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mBinding.invalidateAll()
+        if (this::mConfiguration.isInitialized) {
+            val timeDiff = System.currentTimeMillis() - mConfiguration.lastCurrentWeatherUpdate
+            // TODO: Replace with threshold from configuration.
+            if (timeDiff > 1000 * 60 * 60 * 3) {
+                askLocationPermission()
+            } else {
+                mBinding.invalidateAll()
+            }
+        }
     }
 
     private fun inject() {
