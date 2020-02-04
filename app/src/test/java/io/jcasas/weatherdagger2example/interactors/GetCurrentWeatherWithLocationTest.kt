@@ -50,7 +50,7 @@ class GetCurrentWeatherWithLocationTest {
     fun `getCurrentWeather failsCallToWebService serviceUnavailableErrorEntityExpected`() {
         runBlocking {
             locationSuccess()
-            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { throw SocketTimeoutException() }
+            `when`(weatherRepoMock.getCurrentWeather(any(Coordinates::class.java))).thenAnswer { throw SocketTimeoutException() }
             val value = SUT()
             assert(value is Resource.Error<WeatherEntity>)
             val errorEntity = (value as Resource.Error<WeatherEntity>).errorEntity
@@ -64,7 +64,7 @@ class GetCurrentWeatherWithLocationTest {
     fun `getCurrentWeather notNetwork networkErrorEntityExpected`() {
         runBlocking {
             locationSuccess()
-            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { throw IOException() }
+            `when`(weatherRepoMock.getCurrentWeather(any(Coordinates::class.java))).thenAnswer { throw IOException() }
             val value = SUT()
             assert(value is Resource.Error<WeatherEntity>)
             val errorEntity = (value as Resource.Error<WeatherEntity>).errorEntity
@@ -77,8 +77,8 @@ class GetCurrentWeatherWithLocationTest {
     fun `getCurrentWeather success weatherEntityExpected`() {
         runBlocking {
             locationSuccess()
-            val expectedResult = WeatherEntity(1, "Clouds", "Description", 40.1, 20.2, 42.0, Units.SI, "Mexico", Coordinates(0.0, 0.0), DateTime.now())
-            `when`(weatherRepoMock.getCurrent(any(Coordinates::class.java))).thenAnswer { expectedResult }
+            val expectedResult = WeatherEntity(1, "Clouds", "Description", 40.1, 20.2, 42.0, Units.SI, "Mexico", Coordinates(0.0, 0.0), DateTime.now(), 1, 1.0)
+            `when`(weatherRepoMock.getCurrentWeather(any(Coordinates::class.java))).thenAnswer { expectedResult }
             val value = SUT()
             assert(value is Resource.Success<WeatherEntity>)
             Assert.assertNotNull((value as Resource.Success).data)

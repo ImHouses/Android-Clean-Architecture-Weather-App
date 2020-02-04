@@ -63,8 +63,15 @@ class AppModule(private val app: Application) {
                 database.execSQL("ALTER TABLE weathers ADD COLUMN lastUpdate INTEGER")
             }
         }
+        val MIGRATION_3_TO_4 = object : Migration(3,4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE weathers ADD COLUMN humidity INTEGER")
+                database.execSQL("ALTER TABLE weathers ADD COLUMN windSpeed REAL")
+            }
+        }
         return Room.databaseBuilder(app, AppDatabase::class.java, Constants.DATABASE_NAME)
                 .addMigrations(MIGRATION_2_TO_3)
+                .addMigrations(MIGRATION_3_TO_4)
                 .build()
     }
 

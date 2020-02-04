@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, Juan Casas
+ * Copyright 2020, Juan Casas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import io.jcasas.weatherdagger2example.BR
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
@@ -45,6 +46,7 @@ import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 import org.joda.time.DateTime
 import org.joda.time.Period
 import javax.inject.Inject
@@ -62,9 +64,12 @@ class MainActivity : AppCompatActivity() {
             val period = Period(dateTime, DateTime.now())
             val template = context.getString(R.string.last_update_template)
             val timePart = when {
-                period.days > 0 -> "${period.days} days"
-                period.hours > 0 -> "${period.hours} hours"
-                period.minutes > 0 -> "${period.minutes} minutes"
+                period.days == 1 -> "${period.days} ${context.getString(R.string.day)}"
+                period.hours == 1 -> "${period.hours} ${context.getString(R.string.hour)}"
+                period.minutes == 1 -> "${period.minutes} ${context.getString(R.string.minute)}"
+                period.days > 0 -> "${period.days} ${context.getString(R.string.days)}"
+                period.hours > 0 -> "${period.hours} ${context.getString(R.string.hours)}"
+                period.minutes > 0 -> "${period.minutes} ${context.getString(R.string.minutes)}"
                 else -> context.getString(R.string.moments_ago)
             }
             text = String.format(template, timePart)
@@ -79,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mForecastList: ArrayList<Forecast>
     private lateinit var mForecastAdapter: ForecastAdapter
     private lateinit var mConfiguration: Configuration
+    private var isPaused: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +92,16 @@ class MainActivity : AppCompatActivity() {
         inject()
         bindUi()
         askLocationPermission()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isPaused = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mBinding.invalidateAll()
     }
 
     private fun inject() {
@@ -98,23 +114,19 @@ class MainActivity : AppCompatActivity() {
         mConfiguration = mViewModel.getConfig()
         mForecastAdapter = ForecastAdapter(mForecastList, mConfiguration.defaultUnits)
         mBinding.isLoading = true
-        mainSwipeRefreshLayout.setOnRefreshListener { mViewModel.getWeatherAtCurrentLocation() }
-        supportActionBar!!.title = ActivityUtils.getStringByRes(R.string.app_name, this)
-        rvForecast.apply {
+        /*rvForecast.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             isNestedScrollingEnabled = false
             setHasFixedSize(true)
             adapter = mForecastAdapter
-        }
+        }*/
         mViewModel.currentWeatherLiveData.observe(this, Observer { weatherResource ->
             showWeather(weatherResource)
             mBinding.isLoading = false
-            mBinding.isRefreshing = false
         })
         mViewModel.forecastLiveData.observe(this, Observer { forecastResource ->
             showForecast(forecastResource)
             mBinding.isLoading = false
-            mBinding.isRefreshing = false
         })
     }
 
@@ -149,11 +161,11 @@ class MainActivity : AppCompatActivity() {
         when (resource) {
             is Resource.Success -> {
                 val weather = resource.data
-                weatherIcon.setImageResource(ActivityUtils.getIconRes(weather.weatherId))
                 val units = if (weather.units == Units.SI) "C" else "F"
                 mBinding.apply {
                     this.units = units
                     this.weather = weather
+                    this.lastUpdate = weather.lastUpdate
                 }
             }
             is Resource.Error -> {
@@ -177,16 +189,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: Add error handling.
     private fun showErrorSnackbar(error: ErrorEntity) {
         if (error is ErrorEntity.Network || error is ErrorEntity.ServiceUnavailable) {
             Snackbar.make(
-                    mainSwipeRefreshLayout,
+                    mainContainer,
                     R.string.main_weather_error,
                     Snackbar.LENGTH_SHORT
             ).show()
         } else {
             Snackbar.make(
-                    mainSwipeRefreshLayout,
+                    mainContainer,
                     R.string.generic_error,
                     Snackbar.LENGTH_SHORT
             ).show()

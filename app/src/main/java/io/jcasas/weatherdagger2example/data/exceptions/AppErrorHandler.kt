@@ -15,6 +15,7 @@ class AppErrorHandler : ErrorHandler {
         is SocketTimeoutException -> ErrorEntity.ServiceUnavailable(throwable)
         is IOException -> ErrorEntity.Network(throwable)
         is IllegalArgumentException -> ErrorEntity.ServiceUnavailable(throwable)
+        is IllegalStateException -> ErrorEntity.ServiceUnavailable(throwable)
         else -> ErrorEntity.Unknown(throwable)
     }
 }

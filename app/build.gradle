@@ -12,12 +12,12 @@ android {
         pickFirst 'protobuf.meta'
     }
 
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "io.jcasas.weatherdagger2example"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
         versionName "0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,7 +38,7 @@ kapt {
 }
 
 dependencies {
-    def lifecycle_version = "2.1.0"
+    def lifecycle_version = "2.2.0"
     def room_version = "2.2.3"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -66,5 +66,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    testImplementation 'org.mockito:mockito-core:3.2.4'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "joda-time:joda-time:2.10.5"
 }
