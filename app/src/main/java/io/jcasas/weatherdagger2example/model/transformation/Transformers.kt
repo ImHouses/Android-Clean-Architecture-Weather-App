@@ -20,7 +20,9 @@ object Transformers {
             units = weather.units,
             locationName = weather.locationName,
             coordinates = weather.coordinates,
-            lastUpdate = weather.lastUpdate
+            lastUpdate = weather.lastUpdate,
+            humidity = weather.humidity?.toInt() ?: 0,
+            windSpeed = weather?.windSpeed ?: 0.0
     )
 
     fun fromDomainForecast(forecastEntity: ForecastEntity): Forecast = Forecast(

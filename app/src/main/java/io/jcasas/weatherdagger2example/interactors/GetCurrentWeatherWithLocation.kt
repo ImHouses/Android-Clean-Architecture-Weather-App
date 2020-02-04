@@ -15,6 +15,6 @@ class GetCurrentWeatherWithLocation @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Resource<WeatherEntity> = tryOrHandle(errorHandler) {
-        weatherRepository.getCurrent(locationRepository.getCurrentLocation())
+        weatherRepository.getCurrentWeather(locationRepository.getCurrentLocation())
     }
 }

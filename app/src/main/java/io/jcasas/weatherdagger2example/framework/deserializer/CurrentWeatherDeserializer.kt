@@ -40,7 +40,9 @@ class CurrentWeatherDeserializer @Inject constructor(
                 if (units == Constants.Values.UNITS_SI) Units.SI else Units.IMPERIAL,
                 jsonObject["name"].asString,
                 coordinates,
-                DateTime.now()
+                DateTime.now(),
+                mainObject["humidity"].asInt,
+                jsonObject["wind"].asJsonObject["speed"].asDouble
         )
     }
 }

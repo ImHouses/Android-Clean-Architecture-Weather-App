@@ -69,20 +69,19 @@ class FrameworkDataModule {
     @Singleton
     fun provideWeatherSource(
             weatherService: WeatherService,
-            sharedPreferences: SharedPreferences,
-            appDatabase: AppDatabase,
-            connectivityManager: ConnectivityManager
+            appDatabase: AppDatabase
     ): WeatherDataSource = AppWeatherDataSource(
             weatherService,
-            sharedPreferences,
-            appDatabase,
-            connectivityManager
+            appDatabase
     )
 
     @Provides
     @Singleton
-    fun providePreferencesSource(sharedPreferences: SharedPreferences): ConfigurationDataSource =
-            AppConfigDataSource(sharedPreferences)
+    fun providePreferencesSource(
+            sharedPreferences: SharedPreferences,
+            connectivityManager: ConnectivityManager
+    ): ConfigurationDataSource =
+            AppConfigDataSource(sharedPreferences, connectivityManager)
 
     @Provides
     @Singleton

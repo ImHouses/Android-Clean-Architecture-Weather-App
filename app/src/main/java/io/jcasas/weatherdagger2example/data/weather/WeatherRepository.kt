@@ -6,7 +6,9 @@ import io.jcasas.weatherdagger2example.domain.weather.WeatherEntity
 
 interface WeatherRepository {
 
-    suspend fun getCurrent(coordinates: Coordinates): WeatherEntity
+    // TODO: Create an entity that contains both WeatherEntity and the List of the ForecastEntity.
 
-    suspend fun getOneWeekForecast(coordinates: Coordinates): List<ForecastEntity>
+    suspend fun getCurrentWeather(coordinates: Coordinates): WeatherEntity
+
+    suspend fun get5DayCurrentForecast(coordinates: Coordinates): List<ForecastEntity>
 }

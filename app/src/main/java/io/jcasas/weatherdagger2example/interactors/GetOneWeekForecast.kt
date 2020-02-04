@@ -15,6 +15,6 @@ class GetOneWeekForecast @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Resource<List<ForecastEntity>> = tryOrHandle(errorHandler) {
-        weatherRepository.getOneWeekForecast(locationRepository.getCurrentLocation())
+        weatherRepository.get5DayCurrentForecast(locationRepository.getCurrentLocation())
     }
 }
