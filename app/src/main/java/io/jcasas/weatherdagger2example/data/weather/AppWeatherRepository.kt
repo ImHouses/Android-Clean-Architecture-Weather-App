@@ -13,9 +13,9 @@ class AppWeatherRepository @Inject constructor(
         private val configurationDataSource: ConfigurationDataSource
 ): WeatherRepository {
 
+    // TODO: Move threshold to the configuration.
     /* 3 hours. */
     private val threshold: Long = 3 * 60 * 60 * 1000
-        get() = field
 
     override suspend fun getCurrentWeather(coordinates: Coordinates): WeatherEntity {
         val networkStatus = configurationDataSource.getNetworkStatus()
@@ -27,6 +27,7 @@ class AppWeatherRepository @Inject constructor(
         }
         if (savedWeather == null || config.lastCurrentWeatherUpdate - System.currentTimeMillis() > threshold) {
             val retrievedWeather = dataSource.getCurrentWeatherFromService(coordinates, savedUnits)
+            configurationDataSource.saveLastUpdate(System.currentTimeMillis())
             dataSource.saveCurrentWeatherToLocal(retrievedWeather)
         }
         return dataSource.getCurrentWeatherFromLocal(savedUnits) ?: throw IllegalStateException()

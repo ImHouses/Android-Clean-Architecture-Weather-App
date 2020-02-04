@@ -46,7 +46,7 @@ class AppWeatherRepositoryTest {
                 "MX",
                 Coordinates(1.1, -1.0),
                 null,
-                1.1,
+                1,
                 1.1
         )
         forecastListMock = mutableListOf(
@@ -88,6 +88,7 @@ class AppWeatherRepositoryTest {
                 verify(configSrcMock, times(2)).getNetworkStatus()
                 verify(weatherSrcMock, times(1)).getCurrentWeatherFromService(any(), any())
                 verify(weatherSrcMock, times(1)).saveCurrentWeatherToLocal(capture())
+                verify(configSrcMock, times(1)).saveLastUpdate(any())
                 verify(weatherSrcMock, times(3)).getCurrentWeatherFromLocal(any())
                 assertEquals(firstValue, result)
             }
@@ -99,6 +100,7 @@ class AppWeatherRepositoryTest {
                 verify(configSrcMock, times(3)).getNetworkStatus()
                 verify(weatherSrcMock, times(1)).getCurrentWeatherFromService(any(), any())
                 verify(weatherSrcMock, times(1)).saveCurrentWeatherToLocal(any())
+                verify(configSrcMock, times(1)).saveLastUpdate(any())
                 verify(weatherSrcMock, times(5)).getCurrentWeatherFromLocal(any())
                 assertEquals(weatherEntityMock, result)
             }
