@@ -48,7 +48,7 @@ class AppWeatherDataSourceTest {
                 "MX",
                 Coordinates(1.1, -1.0),
                 null,
-                1.1,
+                1,
                 1.1
         )
         forecastListMock = mutableListOf(
