@@ -33,6 +33,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import io.jcasas.weatherdagger2example.BR
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
@@ -45,6 +46,7 @@ import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
 import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 import org.joda.time.DateTime
 import org.joda.time.Period
 import javax.inject.Inject
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mForecastList: ArrayList<Forecast>
     private lateinit var mForecastAdapter: ForecastAdapter
     private lateinit var mConfiguration: Configuration
+    private var isPaused: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +92,16 @@ class MainActivity : AppCompatActivity() {
         inject()
         bindUi()
         askLocationPermission()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isPaused = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mBinding.invalidateAll()
     }
 
     private fun inject() {
@@ -110,12 +123,10 @@ class MainActivity : AppCompatActivity() {
         mViewModel.currentWeatherLiveData.observe(this, Observer { weatherResource ->
             showWeather(weatherResource)
             mBinding.isLoading = false
-            mBinding.isRefreshing = false
         })
         mViewModel.forecastLiveData.observe(this, Observer { forecastResource ->
             showForecast(forecastResource)
             mBinding.isLoading = false
-            mBinding.isRefreshing = false
         })
     }
 
@@ -154,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                 mBinding.apply {
                     this.units = units
                     this.weather = weather
+                    this.lastUpdate = weather.lastUpdate
                 }
             }
             is Resource.Error -> {
@@ -177,6 +189,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: Add error handling.
     private fun showErrorSnackbar(error: ErrorEntity) {
         if (error is ErrorEntity.Network || error is ErrorEntity.ServiceUnavailable) {
             Snackbar.make(
