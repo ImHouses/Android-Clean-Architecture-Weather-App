@@ -7,7 +7,7 @@ import io.jcasas.weatherdagger2example.domain.forecast.ForecastType
 import org.joda.time.DateTime
 
 /**
- * Class for defining converters for storing complex data types.
+ * Class for defining converters for storing complex data types into the Room Database.
  */
 class Converters {
 
