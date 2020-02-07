@@ -19,19 +19,21 @@
             type="org.joda.time.DateTime" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackgroundDark">
+
         <ProgressBar
+            android:id="@+id/progressMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/colorWhite"
             android:visibility="@{isLoading ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminateTint="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:id="@+id/buttonMainOpenDrawer"
             android:layout_width="24dp"
@@ -39,7 +41,8 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/ic_menu_dark_mode"
             app:layout_constraintStart_toStartOf="@id/linear_main_location"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/linear_main_location"
             android:layout_width="wrap_content"
@@ -47,23 +50,26 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/buttonMainOpenDrawer"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonMainOpenDrawer">
+
             <ImageView
-                android:layout_height="25dp"
                 android:layout_width="25dp"
-                android:src="@drawable/ic_location_red"/>
+                android:layout_height="25dp"
+                android:src="@drawable/ic_location_red" />
+
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginStart="2dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_marginStart="2dp"
+                android:text="@{weather.locationName}"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp"
                 app:fontFamily="@font/montserrat_medium"
-                android:text="@{weather.locationName}"
-                tools:text="San Francisco, US"/>
+                tools:text="San Francisco, US" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/text_main_last_update"
             android:layout_width="wrap_content"
@@ -73,61 +79,114 @@
             android:textSize="16sp"
             app:fontFamily="@font/montserrat_medium"
             app:lastUpdate="@{lastUpdate}"
-            tools:text="Last Update: 3 hours ago"
             app:layout_constraintStart_toStartOf="@id/linear_main_location"
-            app:layout_constraintTop_toBottomOf="@id/linear_main_location"/>
+            app:layout_constraintTop_toBottomOf="@id/linear_main_location"
+            tools:text="Last Update: 3 hours ago" />
+
         <TextView
             android:id="@+id/text_main_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="40dp"
+            android:text="@{units == null ? `` : @string/main_temp_template(weather.temperature, units)}"
             android:textColor="@color/colorWhite"
             android:textSize="60sp"
             app:fontFamily="@font/montserrat_medium"
-            android:text="@{units == null ? `` : @string/main_temp_template(weather.temperature, units)}"
-            tools:text="36ºC"
+            app:layout_constraintStart_toStartOf="@id/text_main_last_update"
             app:layout_constraintTop_toBottomOf="@id/text_main_last_update"
-            app:layout_constraintStart_toStartOf="@id/text_main_last_update"/>
+            tools:text="36ºC" />
+
         <TextView
             android:id="@+id/text_main_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{weather.statusDescription, default=` `}"
             android:textColor="@color/colorWhite"
             android:textSize="25sp"
             app:fontFamily="@font/raleway_regular"
-            android:text="@{weather.statusDescription, default=` `}"
-            tools:text="Clear"
-            app:layout_constraintTop_toBottomOf="@id/text_main_temperature"
+            app:layout_constraintEnd_toEndOf="@id/text_main_temperature"
             app:layout_constraintStart_toStartOf="@id/text_main_temperature"
-            app:layout_constraintEnd_toEndOf="@id/text_main_temperature"/>
+            app:layout_constraintTop_toBottomOf="@id/text_main_temperature"
+            tools:text="Clear" />
+
         <TextView
             android:id="@+id/text_main_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:text="@{weather == null ? ``: @string/main_humidity_template(weather.humidity)}"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             app:fontFamily="@font/raleway_regular"
-            android:text="@{weather == null ? ``: @string/main_humidity_template(weather.humidity)}"
-            tools:text="Humidity 23%"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/text_main_wind_speed"
             app:layout_constraintStart_toEndOf="@id/text_main_temperature"
             app:layout_constraintTop_toTopOf="@id/text_main_temperature"
-            app:layout_constraintBottom_toTopOf="@id/text_main_wind_speed"/>
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Humidity 23%" />
+
         <TextView
             android:id="@+id/text_main_wind_speed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:text="@{units == null ? ``: weather.units == Units.SI ? @string/main_wind_template(weather.windSpeed, @string/speed_metric) : @string/main_wind_template(weather.windSpeed, @string/speed_imperial)}"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             app:fontFamily="@font/raleway_regular"
-            android:text="@{units == null ? ``: weather.units == Units.SI ? @string/main_wind_template(weather.windSpeed, @string/speed_metric) : @string/main_wind_template(weather.windSpeed, @string/speed_imperial)}"
-            tools:text="Wind Speed\n4.23 m/s"
+            app:layout_constraintBottom_toBottomOf="@id/text_main_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/text_main_humidity"
             app:layout_constraintTop_toBottomOf="@id/text_main_humidity"
-            app:layout_constraintBottom_toBottomOf="@id/text_main_description"/>
+            tools:text="Wind Speed\n4.23 m/s" />
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:id="@+id/mainContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_main_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutDescription="@xml/activity_main_xml_maincontainer_scene">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/buttonMainSwipeForecast"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="35dp"
+                android:src="@drawable/ic_arrow_up"
+                app:altSrc="@drawable/ic_arrow_down_grey"
+                app:overlay="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/linearMainForecast"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/buttonMainSwipeForecast">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forecast"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/montserrat_medium"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewMainForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </androidx.constraintlayout.motion.widget.MotionLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
