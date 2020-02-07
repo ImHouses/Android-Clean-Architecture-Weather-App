@@ -5,7 +5,7 @@
     <Transition
         motion:constraintSetEnd="@+id/end_forecast"
         motion:constraintSetStart="@id/start_forecast"
-        motion:duration="600">
+        motion:duration="400">
        <OnSwipe
            motion:touchAnchorId="@+id/buttonMainSwipeForecast"
            motion:touchAnchorSide="top"
