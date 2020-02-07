@@ -33,7 +33,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import io.jcasas.weatherdagger2example.BR
 import io.jcasas.weatherdagger2example.R
 import io.jcasas.weatherdagger2example.domain.Units
 import io.jcasas.weatherdagger2example.WeatherApp
@@ -43,10 +42,8 @@ import io.jcasas.weatherdagger2example.domain.config.Configuration
 import io.jcasas.weatherdagger2example.model.Forecast
 import io.jcasas.weatherdagger2example.model.Weather
 import io.jcasas.weatherdagger2example.ui.main.adapter.ForecastAdapter
-import io.jcasas.weatherdagger2example.util.ActivityUtils
 import io.jcasas.weatherdagger2example.util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
 import org.joda.time.DateTime
 import org.joda.time.Period
 import javax.inject.Inject
@@ -84,7 +81,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mForecastList: ArrayList<Forecast>
     private lateinit var mForecastAdapter: ForecastAdapter
     private lateinit var mConfiguration: Configuration
-    private var isPaused: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,12 +89,7 @@ class MainActivity : AppCompatActivity() {
         bindUi()
         askLocationPermission()
     }
-
-    override fun onPause() {
-        super.onPause()
-        isPaused = true
-    }
-
+    
     override fun onResume() {
         super.onResume()
         if (this::mConfiguration.isInitialized) {
@@ -122,12 +113,12 @@ class MainActivity : AppCompatActivity() {
         mConfiguration = mViewModel.getConfig()
         mForecastAdapter = ForecastAdapter(mForecastList, mConfiguration.defaultUnits)
         mBinding.isLoading = true
-        /*rvForecast.apply {
+        recyclerViewMainForecast.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             isNestedScrollingEnabled = false
             setHasFixedSize(true)
             adapter = mForecastAdapter
-        }*/
+        }
         mViewModel.currentWeatherLiveData.observe(this, Observer { weatherResource ->
             showWeather(weatherResource)
             mBinding.isLoading = false
