@@ -36,7 +36,6 @@ class ForecastAdapter(private val list: List<Forecast>, var units: Units) :
             binding.apply {
                 this.forecast = forecast
                 this.units = this@ForecastAdapter.units
-                root.forecast_item_icon.setImageResource(ActivityUtils.getIconRes(forecast.id))
             }.executePendingBindings()
         }
     }
